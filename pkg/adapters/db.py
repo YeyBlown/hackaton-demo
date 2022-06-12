@@ -1,5 +1,7 @@
 # TODO: handle relations post-user on create-like-unlike-delete actions
 # TODO: ensure thread safe
+# TODO: should i move to DBFacade?
+# TODO: handle exceptions (already liked, not exists...)
 from fastapi_sqlalchemy import db
 
 from adapters.hash_utils import HashUtils
@@ -27,16 +29,22 @@ class UserDBAdapter:
         return users
 
     @staticmethod
-    def add_post_created():
-        pass
+    def add_post_created(user: ModelUser, post: ModelPost):
+        user.posts_created.append(post)
+        db.session.add(user)
+        db.session.commit()
 
     @staticmethod
-    def add_post_liked():
-        pass
+    def add_post_liked(user: ModelUser, post: ModelPost):
+        user.post_liked.append(post)
+        db.session.add(user)
+        db.session.commit()
 
     @staticmethod
-    def remove_post_liked():
-        pass
+    def remove_post_liked(user: ModelUser, post: ModelPost):
+        user.post_liked.remove(post)
+        db.session.add(user)
+        db.session.commit()
 
     @staticmethod
     def create_user(user: SchemaUser):
@@ -50,12 +58,16 @@ class UserDBAdapter:
 
 class PostDBAdapter:
     @staticmethod
-    def like_post(user_id: int, post_id: int):
-        pass
+    def like_post(user: ModelUser, post: ModelPost):
+        post.likes.append(user)
+        db.session.add(post)
+        db.session.commit()
 
     @staticmethod
-    def unlike_post(user_id: int, post_id: int):
-        pass
+    def unlike_post(user: ModelUser, post: ModelPost):
+        post.likes.remove(user)
+        db.session.add(post)
+        db.session.commit()
 
     @staticmethod
     def create_post(post: SchemaPost):

@@ -1,19 +1,21 @@
 # TODO: posts related controllers here
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter
 
-# from ..dependencies import get_token_header
+from adapters.db import PostDBAdapter
+from models.schema import Post as SchemaPost
 
 router = APIRouter(
     prefix="/post",
     tags=["post"],
-    # dependencies=[Depends(get_token_header)], TODO recheck
     responses={404: {"description": "Not found"}},
 )
 
 
-@router.post("/create")
-def create(token: str, header: str, content: str):
-    pass
+@router.post("/create", response_model=SchemaPost)
+def create(token: str, post: SchemaPost):
+    # TODO
+    db_post = PostDBAdapter.create_post(post)
+    return db_post
 
 
 @router.post("/like")
@@ -32,6 +34,5 @@ def unlike(token: str, post_id: str):
 
 @router.get("/view")
 def view():
-    # TODO: return posts
-    # TODO: figure out better way than returning all posts
-    pass
+    posts = PostDBAdapter.get_all_posts()
+    return posts

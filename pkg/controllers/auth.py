@@ -1,13 +1,13 @@
 # TODO user authentification functionality controllers
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import APIRouter
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from adapters.token import Token, TokenAdapter, User
+from adapters.token import Token, TokenAdapter
 from adapters.db import UserDBAdapter
-
+from models.schema import User
 
 # from ..dependencies import get_token_header
 
@@ -63,9 +63,3 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @router.get("/me/", response_model=User)
 async def read_users_me(current_user: User = Depends(TokenAdapter.get_current_active_user)):
     return current_user
-
-
-# TODO: should i get rid of this?
-@router.get("/users/me/items/")
-async def read_own_items(current_user: User = Depends(TokenAdapter.get_current_active_user)):
-    return [{"item_id": "Foo", "owner": current_user.username}]
