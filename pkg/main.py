@@ -19,6 +19,7 @@ import os
 from dotenv import load_dotenv
 
 from controllers import auth
+from adapters.contract import PostgresEnv
 
 load_dotenv('local.env')
 
@@ -28,7 +29,7 @@ app.include_router(auth.router)
 
 # to avoid csrftokenError
 # db_url = 'postgresql://postgres:<password>@localhost/<name_of_the_datbase>'
-app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URL'])
+app.add_middleware(DBSessionMiddleware, db_url=PostgresEnv.get_url())
 
 
 @app.get("/")
