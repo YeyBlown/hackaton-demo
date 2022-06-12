@@ -1,10 +1,11 @@
 from passlib.context import CryptContext
 
+from adapters.contract import EncryptionEnv
+
 
 class HashUtils:
     # TODO: ensure thread safe
-    # TODO: move hard variables to contract, please :)
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    pwd_context = CryptContext(schemes=[EncryptionEnv.get_hash_encryption_schema()], deprecated="auto")
 
     @staticmethod
     def verify_password(plain_password, hashed_password):

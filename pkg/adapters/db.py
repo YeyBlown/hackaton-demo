@@ -1,5 +1,5 @@
-# TODO: fill database adapter
 # TODO: handle relations post-user on create-like-unlike-delete actions
+# TODO: ensure thread safe
 from fastapi_sqlalchemy import db
 
 from adapters.hash_utils import HashUtils

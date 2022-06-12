@@ -32,7 +32,7 @@ class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     username = Column(String)
-    hashed_password = Column(String)  # TODO: change to hashes
+    hashed_password = Column(String)
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_last_activity = Column(DateTime(timezone=True), onupdate=func.now())
     time_last_login = Column(DateTime(timezone=True), onupdate=func.now())

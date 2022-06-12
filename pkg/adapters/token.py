@@ -1,14 +1,15 @@
 # TODO: refactor
 from datetime import datetime, timedelta
 
-from fastapi import Depends, FastAPI, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel
 
 from adapters.db import UserDBAdapter
 from adapters.hash_utils import HashUtils
+
+from models.schema import User as UserModel
 
 
 # TODO: move tokens to models
@@ -17,20 +18,8 @@ class Token(BaseModel):
     token_type: str
 
 
-class TokenData(BaseModel):
-    username: str | None = None
-
-
-# TODO: import user from models
-class User(BaseModel):
-    username: str
-
-
-class UserInDB(User):
+class UserInDB(UserModel):
     hashed_password: str
-
-
-app = FastAPI()
 
 
 class TokenAdapter:
@@ -75,17 +64,15 @@ class TokenAdapter:
             username: str = payload.get("sub")
             if username is None:
                 raise credentials_exception
-            token_data = TokenData(username=username)
         except JWTError:
             raise credentials_exception
-        # TODO: ask from db
-        user = UserDBAdapter.get_user_by_username(token_data.username)
+        user = UserDBAdapter.get_user_by_username(username)
         if user is None:
             raise credentials_exception
         return user
 
     @staticmethod
-    async def get_current_active_user(current_user: User = Depends(get_current_user)):
+    async def get_current_active_user(current_user: UserModel = Depends(get_current_user)):
         # TODO: should i use class before last param?
         if current_user.disabled:  # TODO: should i add disabled to user BaseModel or token BaseModel?
             raise HTTPException(status_code=400, detail="Inactive user")
