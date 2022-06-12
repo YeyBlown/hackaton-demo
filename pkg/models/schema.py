@@ -12,8 +12,8 @@ class Post(BaseModel):
 
 
 class User(BaseModel):
-    login: str
-    password: str
+    username: str
+    hashed_password: str
 
     class Config:
         orm_mode = True

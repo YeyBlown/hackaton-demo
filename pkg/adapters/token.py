@@ -6,16 +6,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
-
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
+from adapters.db import UserDBAdapter
 
 
 # TODO: move tokens to models
@@ -30,7 +21,7 @@ class TokenData(BaseModel):
 
 # TODO: import user from models
 class User(BaseModel):
-    login: str
+    username: str
 
 
 class UserInDB(User):
@@ -103,7 +94,7 @@ class TokenAdapter:
         except JWTError:
             raise credentials_exception
         # TODO: ask from db
-        user = db.get_user(fake_users_db, username=token_data.username)
+        user = UserDBAdapter.get_user_by_login(token_data.username)
         if user is None:
             raise credentials_exception
         return user
@@ -114,29 +105,3 @@ class TokenAdapter:
         if current_user.disabled:  # TODO: should i add disabled to user BaseModel or token BaseModel?
             raise HTTPException(status_code=400, detail="Inactive user")
         return current_user
-
-# TODO: create token controllers in appropriate place
-# @app.post("/token", response_model=Token)
-# async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-#     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
-#     if not user:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Incorrect username or password",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-#     access_token_expires = timedelta(minutes=TokenAdapter.ACCESS_TOKEN_EXPIRE_MINUTES)
-#     access_token = create_access_token(
-#         data={"sub": user.username}, expires_delta=access_token_expires
-#     )
-#     return {"access_token": access_token, "token_type": "bearer"}
-#
-#
-# @app.get("/users/me/", response_model=User)
-# async def read_users_me(current_user: User = Depends(get_current_active_user)):
-#     return current_user
-#
-#
-# @app.get("/users/me/items/")
-# async def read_own_items(current_user: User = Depends(get_current_active_user)):
-#     return [{"item_id": "Foo", "owner": current_user.username}]

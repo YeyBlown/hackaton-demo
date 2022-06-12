@@ -1,8 +1,16 @@
 # TODO: fill database adapter
+from fastapi_sqlalchemy import db
+from models.models import User as ModelUser
+
 
 class UserDBAdapter:
     @staticmethod
-    def get_user():
+    def get_user_by_username(username: str):
+        user = db.session.query(ModelUser).filter_by(username=username).first()
+        return user
+
+    @staticmethod
+    def get_user_by_id():
         pass
 
     @staticmethod

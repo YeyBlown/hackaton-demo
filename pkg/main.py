@@ -8,6 +8,7 @@ import uvicorn as uvicorn
 from fastapi import FastAPI
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 
+from adapters.token import TokenAdapter
 from models.schema import Post as SchemaPost
 from models.schema import User as SchemaUser
 
@@ -17,9 +18,13 @@ from models.models import User as ModelUser
 import os
 from dotenv import load_dotenv
 
+from controllers import auth
+
 load_dotenv('local.env')
 
 app = FastAPI()
+
+app.include_router(auth.router)
 
 # to avoid csrftokenError
 # db_url = 'postgresql://postgres:<password>@localhost/<name_of_the_datbase>'
@@ -47,7 +52,9 @@ async def post():
 
 @app.post('/user/', response_model=SchemaUser)
 async def user(user: SchemaUser):
-    db_user = ModelUser(login=user.login, password=user.password, posts_created=[], post_liked=[])
+    password = user.hashed_password
+    hashed_password = TokenAdapter.get_password_hash(password)
+    db_user = ModelUser(username=user.username, hashed_password=hashed_password, posts_created=[], post_liked=[])
     db.session.add(db_user)
     db.session.commit()
     return db_user

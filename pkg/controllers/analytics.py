@@ -12,7 +12,7 @@ router = APIRouter(
 
 
 @router.get("/likes_by_day")
-def likes_by_day(login: str, date_from: str, date_to: str):
+def likes_by_day(username: str, date_from: str, date_to: str):
     # TODO: check user exists
     # TODO: YES: return likes by day
     # TODO: NO: return error
@@ -20,7 +20,7 @@ def likes_by_day(login: str, date_from: str, date_to: str):
 
 
 @router.get("/user_activity")
-def user_activity(login: str):
+def user_activity(username: str):
     # TODO: check user exists
     # TODO: YES: return (last login, last activity)
     # TODO: NO: return error
