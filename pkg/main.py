@@ -1,7 +1,9 @@
-# TODO: get controllers
+# TODO: add missing controllers
+# TODO: split controllers to controllers modules
 # TODO: load parameters
 # TODO: create application,
 # TODO: do we need startup scripts? Do we place them here?
+# TODO: switch db logic to utilizing adapter
 import uvicorn as uvicorn
 from fastapi import FastAPI
 from fastapi_sqlalchemy import DBSessionMiddleware, db
