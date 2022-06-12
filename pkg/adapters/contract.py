@@ -1,4 +1,4 @@
-# TODO: config logic here
+# config logic here
 
 
 import os

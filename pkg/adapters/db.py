@@ -1,8 +1,13 @@
 # TODO: fill database adapter
 # TODO: handle relations post-user on create-like-unlike-delete actions
 from fastapi_sqlalchemy import db
+
+from adapters.hash_utils import HashUtils
 from models.models import User as ModelUser
 from models.models import Post as ModelPost
+
+from models.schema import Post as SchemaPost
+from models.schema import User as SchemaUser
 
 
 class UserDBAdapter:
@@ -33,6 +38,15 @@ class UserDBAdapter:
     def remove_post_liked():
         pass
 
+    @staticmethod
+    def create_user(user: SchemaUser):
+        password = user.hashed_password
+        hashed_password = HashUtils.get_password_hash(password)
+        db_user = ModelUser(username=user.username, hashed_password=hashed_password, posts_created=[], post_liked=[])
+        db.session.add(db_user)
+        db.session.commit()
+        return db_user
+
 
 class PostDBAdapter:
     @staticmethod
@@ -44,8 +58,11 @@ class PostDBAdapter:
         pass
 
     @staticmethod
-    def create_post():
-        pass
+    def create_post(post: SchemaPost):
+        db_post = ModelPost(header=post.header, content=post.content, author_id=post.author_id)
+        db.session.add(db_post)
+        db.session.commit()
+        return db_post
 
     @staticmethod
     def get_post_by_id(post_id: int):

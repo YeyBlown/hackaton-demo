@@ -1,3 +1,4 @@
+# TODO: refactor
 from datetime import datetime, timedelta
 
 from fastapi import Depends, FastAPI, HTTPException, status
@@ -7,6 +8,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 
 from adapters.db import UserDBAdapter
+from adapters.hash_utils import HashUtils
 
 
 # TODO: move tokens to models
@@ -34,7 +36,6 @@ app = FastAPI()
 class TokenAdapter:
 
     # TODO: move hard variables to contract, please :)
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
     # to get a string like this run:
@@ -44,26 +45,10 @@ class TokenAdapter:
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
     @staticmethod
-    def verify_password(plain_password, hashed_password):
-        return TokenAdapter.pwd_context.verify(plain_password, hashed_password)
-
-    @staticmethod
-    def get_password_hash(password):
-        return TokenAdapter.pwd_context.hash(password)
-
-    @staticmethod
-    def get_user_by_username(db, username: str):
-        # TODO: ask real db or just get user as param in higher function
-        return None
-        # if username in db:
-        #     user_dict = db[username]
-        #     return UserInDB(**user_dict)
-
-    @staticmethod
     def authenticate_user(user, password: str):
         if not user:
             return False
-        if not TokenAdapter.verify_password(password, user.hashed_password):
+        if not HashUtils.verify_password(password, user.hashed_password):
             return False
         return user
 
@@ -94,7 +79,7 @@ class TokenAdapter:
         except JWTError:
             raise credentials_exception
         # TODO: ask from db
-        user = UserDBAdapter.get_user_by_login(token_data.username)
+        user = UserDBAdapter.get_user_by_username(token_data.username)
         if user is None:
             raise credentials_exception
         return user
