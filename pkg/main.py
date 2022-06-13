@@ -1,8 +1,5 @@
-# TODO: add missing controllers
-# TODO: split controllers to controllers modules
 # TODO: load parameters
 # TODO: do we need startup scripts? Do we place them here?
-# TODO: switch db logic to utilizing adapter
 from dotenv import load_dotenv
 import uvicorn as uvicorn
 from fastapi import FastAPI

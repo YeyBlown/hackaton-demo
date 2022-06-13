@@ -17,3 +17,11 @@ class User(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Like(BaseModel):
+    user_id: int
+    post_id: int
+
+    class Config:
+        orm_mode = True

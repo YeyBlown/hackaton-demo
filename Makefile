@@ -9,3 +9,6 @@ run-postgres:
 
 stop-postgres:
 	docker stop postgresql
+
+format:
+	black ./pkg

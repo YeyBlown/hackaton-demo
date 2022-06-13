@@ -9,11 +9,12 @@ from alembic import context
 import os
 import sys
 from dotenv import load_dotenv
-from adapters.contract import PostgresEnv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, "local.env"))
 sys.path.append(BASE_DIR)
+
+from adapters.contract import PostgresEnv
 
 
 # This is the Alembic Config object, which provides

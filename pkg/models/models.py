@@ -7,12 +7,12 @@ from sqlalchemy.sql import func
 Base = declarative_base()
 
 
-association_table = Table(
-    "association",
-    Base.metadata,
-    Column("post_id", ForeignKey("post.id")),
-    Column("user_id", ForeignKey("user.id")),
-)
+# association_table = Table(
+#     "association",
+#     Base.metadata,
+#     Column("post_id", ForeignKey("post.id")),
+#     Column("user_id", ForeignKey("user.id")),
+# )
 
 
 class Post(Base):
@@ -26,8 +26,8 @@ class Post(Base):
     author = relationship("User", back_populates="posts_created")
 
     likes = relationship(
-        "User", secondary=association_table, back_populates="post_liked"
-    )  # TODO: review it works properly, configure deletes
+        "Like", back_populates="post"
+    )
 
 
 class User(Base):
@@ -41,6 +41,18 @@ class User(Base):
 
     posts_created = relationship("Post", back_populates="author")
 
-    post_liked = relationship(
-        "Post", secondary=association_table, back_populates="likes"
+    likes = relationship(
+        "Like", back_populates="user"
     )  # TODO: review it works properly, configure deletes
+
+
+class Like(Base):
+    __tablename__ = "likes"
+    id = Column(Integer, primary_key=True, index=True)
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
+
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User", back_populates="likes")
+
+    post_id = Column(Integer, ForeignKey("post.id"))
+    post = relationship("Post", back_populates="likes")

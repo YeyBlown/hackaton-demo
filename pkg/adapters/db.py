@@ -9,8 +9,10 @@ from fastapi_sqlalchemy import db
 from sqlalchemy import and_, func
 
 from adapters.hash_utils import HashUtils
+from entities.exceptions import PostAlreadyLikedException, PostIsNotLikedException
 from models.models import User as ModelUser
 from models.models import Post as ModelPost
+from models.models import Like as ModelLike
 
 from models.schema import Post as SchemaPost
 from models.schema import User as SchemaUser
@@ -39,18 +41,6 @@ class UserDBAdapter:
         db.session.commit()
 
     @staticmethod
-    def add_post_liked(user: ModelUser, post: ModelPost):
-        user.post_liked.append(post)
-        db.session.add(user)
-        db.session.commit()
-
-    @staticmethod
-    def remove_post_liked(user: ModelUser, post: ModelPost):
-        user.post_liked.remove(post)
-        db.session.add(user)
-        db.session.commit()
-
-    @staticmethod
     def create_user(user: SchemaUser):
         password = user.hashed_password
         hashed_password = HashUtils.get_password_hash(password)
@@ -58,7 +48,7 @@ class UserDBAdapter:
             username=user.username,
             hashed_password=hashed_password,
             posts_created=[],
-            post_liked=[],
+            likes=[],
         )
         db.session.add(db_user)
         db.session.commit()
@@ -78,20 +68,20 @@ class UserDBAdapter:
         db.session.add(user)
         db.session.commit()
 
+    @staticmethod
+    def _add_like(user: ModelUser, like: ModelLike):
+        user.likes.append(like)
+        db.session.add(user)
+        db.session.commit()
+
+    @staticmethod
+    def _remove_like(user: ModelUser, like: ModelLike):
+        user.likes.remove(like)
+        db.session.add(user)
+        db.session.commit()
+
 
 class PostDBAdapter:
-    @staticmethod
-    def like_post(user: ModelUser, post: ModelPost):
-        post.likes.append(user)
-        db.session.add(post)
-        db.session.commit()
-
-    @staticmethod
-    def unlike_post(user: ModelUser, post: ModelPost):
-        post.likes.remove(user)
-        db.session.add(post)
-        db.session.commit()
-
     @staticmethod
     def create_post(post: SchemaPost):
         db_post = ModelPost(
@@ -139,3 +129,68 @@ class PostDBAdapter:
                 )
             )
         return [e for e in query]
+
+    @staticmethod
+    def _add_like(post: ModelPost, like: ModelLike):
+        post.likes.append(like)
+        db.session.add(like)
+        db.session.commit()
+
+    @staticmethod
+    def _remove_like(post: ModelPost, like: ModelLike):
+        post.likes.remove(like)
+        db.session.add(post)
+        db.session.commit()
+
+
+class LikeDBAdapter:
+    @staticmethod
+    def create(user: ModelUser, post: ModelPost):
+        if LikeDBAdapter.is_like_exists(user.id, post.id):
+            raise PostAlreadyLikedException()
+        db_like = ModelLike(
+            user_id=user.id,
+            post_id=post.id,
+            user=user,
+            post=post
+        )
+        db.session.add(db_like)
+        db.session.commit()
+        UserDBAdapter._add_like(user, db_like)
+        PostDBAdapter._add_like(post, db_like)
+        db.session.commit()
+        return db_like
+
+    @staticmethod
+    def remove(user: ModelUser, post: ModelPost):
+        like = LikeDBAdapter.get_like(user.id, post.id)
+        if not like:
+            raise PostIsNotLikedException()
+
+        UserDBAdapter._remove_like(user, like)
+        PostDBAdapter._remove_like(post, like)
+
+        db.session.query(ModelLike).filter(and_(
+            ModelLike.id == like.id,
+            ModelLike.post_id == post.id
+        )).delete()
+
+    @staticmethod
+    def is_like_exists(user_id: id, post_id: id):
+        like = db.session.query(ModelLike).filter(
+            and_(
+                ModelLike.user_id == user_id,
+                ModelLike.post_id == post_id
+            )
+        ).first()
+        return like
+
+    @staticmethod
+    def get_like(user_id: id, post_id: id):
+        like = db.session.query(ModelLike).filter(
+            and_(
+                ModelLike.user_id == user_id,
+                ModelLike.post_id == post_id
+            )
+        ).first()
+        return like

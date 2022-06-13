@@ -8,4 +8,5 @@
 # TODO: move sqlalchemy to ScopedSession to ensure thread safeness
 # TODO: add exception handling(DB)
 # TODO: recheck typing everywhere
-# TODO: create requirements txt
+# TODO: create requirements.txt
+# TODO: comment code out

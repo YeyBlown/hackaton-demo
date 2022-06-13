@@ -1,7 +1,8 @@
 # posts related controllers here
 from fastapi import APIRouter, Depends
 
-from adapters.db import PostDBAdapter, UserDBAdapter
+from adapters.db import PostDBAdapter, UserDBAdapter, LikeDBAdapter
+from entities.exceptions import PostAlreadyLikedException, PostIsNotLikedException
 from models.schema import Post as SchemaPost
 from models.schema import User
 from adapters.token import TokenAdapter
@@ -25,25 +26,28 @@ async def create(
 
 @router.post("/like")
 async def like(
-    post: SchemaPost, current_user: User = Depends(TokenAdapter.get_current_active_user)
+    post_id: int, current_user: User = Depends(TokenAdapter.get_current_active_user)
 ):
-    db_post = PostDBAdapter.like_post(current_user, post)
-    _ = UserDBAdapter.add_post_liked(current_user, db_post)
+    post = PostDBAdapter.get_post_by_id(post_id)
+    try:
+        like_db = LikeDBAdapter.create(current_user, post)
+    except PostAlreadyLikedException as _:
+        return {"error": 'already liked'}
     UserDBAdapter.update_last_activity(current_user)
-    return db_post
+    return like_db
 
 
 @router.post("/unlike")
 async def unlike(
-    post: SchemaPost, current_user: User = Depends(TokenAdapter.get_current_active_user)
+    post_id: int, current_user: User = Depends(TokenAdapter.get_current_active_user)
 ):
-    #  TODO: check post liked by user
-    #  TODO: YES: unlike, return success
-    #  TODO: NO: return "not liked"
-    db_post = PostDBAdapter.unlike_post(current_user, post)
-    _ = UserDBAdapter.remove_post_liked(current_user, db_post)
+    post = PostDBAdapter.get_post_by_id(post_id)
+    try:
+        like_db = LikeDBAdapter.remove(current_user, post)
+    except PostIsNotLikedException as _:
+        return 'not yet liked to unlike'
     UserDBAdapter.update_last_activity(current_user)
-    return db_post
+    return like_db
 
 
 @router.get("/view")

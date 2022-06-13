@@ -4,7 +4,6 @@ from adapters.contract import EncryptionEnv
 
 
 class HashUtils:
-    # TODO: ensure thread safe
     pwd_context = CryptContext(
         schemes=[EncryptionEnv.get_hash_encryption_schema()], deprecated="auto"
     )
