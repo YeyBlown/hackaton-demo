@@ -73,7 +73,8 @@ class TokenAdapter:
 
     @staticmethod
     async def get_current_active_user(current_user: UserModel = Depends(get_current_user)):
+        # TODO: should i rework this to sync?
         # TODO: should i use class before last param?
-        if current_user.disabled:  # TODO: should i add disabled to user BaseModel or token BaseModel?
-            raise HTTPException(status_code=400, detail="Inactive user")
+        # if current_user.disabled:  # TODO: should i add disabled to user BaseModel or token BaseModel?
+        #     raise HTTPException(status_code=400, detail="Inactive user")
         return current_user
