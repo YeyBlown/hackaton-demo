@@ -5,14 +5,20 @@ import os
 
 
 class PostgresEnv:
-    username = os.getenv('POSTGRES_USERNAME')
-    password = os.getenv('POSTGRES_PASSWORD')
-    address = os.getenv('POSTGRES_ADDRESS')
-    port = os.getenv('POSTGRES_PORT')
-    database = os.getenv('POSTGRES_DATABASE_NAME')
+    username = os.getenv("POSTGRES_USERNAME")
+    password = os.getenv("POSTGRES_PASSWORD")
+    address = os.getenv("POSTGRES_ADDRESS")
+    port = os.getenv("POSTGRES_PORT")
+    database = os.getenv("POSTGRES_DATABASE_NAME")
 
-    url_format = 'postgresql://{username}:{password}@{address}:{port}/{database}'
-    url = url_format.format(username=username, password=password, address=address, port=port, database=database)
+    url_format = "postgresql://{username}:{password}@{address}:{port}/{database}"
+    url = url_format.format(
+        username=username,
+        password=password,
+        address=address,
+        port=port,
+        database=database,
+    )
 
     @staticmethod
     def get_url():
@@ -20,7 +26,7 @@ class PostgresEnv:
 
 
 class EncryptionEnv:
-    hash_encryption_schema = os.getenv('HASH_ENCRYPTION_SCHEMA')
+    hash_encryption_schema = os.getenv("HASH_ENCRYPTION_SCHEMA")
 
     @staticmethod
     def get_hash_encryption_schema():

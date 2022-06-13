@@ -49,7 +49,9 @@ class TokenAdapter:
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, TokenAdapter.SECRET_KEY, algorithm=TokenAdapter.ALGORITHM)
+        encoded_jwt = jwt.encode(
+            to_encode, TokenAdapter.SECRET_KEY, algorithm=TokenAdapter.ALGORITHM
+        )
         return encoded_jwt
 
     @staticmethod
@@ -60,7 +62,9 @@ class TokenAdapter:
             headers={"WWW-Authenticate": "Bearer"},
         )
         try:
-            payload = jwt.decode(token, TokenAdapter.SECRET_KEY, algorithms=[TokenAdapter.ALGORITHM])
+            payload = jwt.decode(
+                token, TokenAdapter.SECRET_KEY, algorithms=[TokenAdapter.ALGORITHM]
+            )
             username: str = payload.get("sub")
             if username is None:
                 raise credentials_exception

@@ -35,5 +35,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 @router.get("/me/", response_model=User)
-async def read_users_me(current_user: User = Depends(TokenAdapter.get_current_active_user)):
+async def read_users_me(
+    current_user: User = Depends(TokenAdapter.get_current_active_user),
+):
     return current_user

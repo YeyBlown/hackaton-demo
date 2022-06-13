@@ -54,7 +54,12 @@ class UserDBAdapter:
     def create_user(user: SchemaUser):
         password = user.hashed_password
         hashed_password = HashUtils.get_password_hash(password)
-        db_user = ModelUser(username=user.username, hashed_password=hashed_password, posts_created=[], post_liked=[])
+        db_user = ModelUser(
+            username=user.username,
+            hashed_password=hashed_password,
+            posts_created=[],
+            post_liked=[],
+        )
         db.session.add(db_user)
         db.session.commit()
         return db_user
@@ -89,7 +94,9 @@ class PostDBAdapter:
 
     @staticmethod
     def create_post(post: SchemaPost):
-        db_post = ModelPost(header=post.header, content=post.content, author_id=post.author_id)
+        db_post = ModelPost(
+            header=post.header, content=post.content, author_id=post.author_id
+        )
         db.session.add(db_post)
         db.session.commit()
         return db_post
@@ -110,15 +117,25 @@ class PostDBAdapter:
         return posts
 
     @staticmethod
-    def get_posts_by_user_date(date_from: datetime.datetime,
-                               date_to: datetime.datetime,
-                               user_id: Optional[int] = None):
+    def get_posts_by_user_date(
+        date_from: datetime.datetime,
+        date_to: datetime.datetime,
+        user_id: Optional[int] = None,
+    ):
         # TODO: refactor prettier
         if user_id is not None:
-            query = db.session.query(ModelPost).filter(and_(func.date(ModelPost.time_created) >= date_from,
-                                                            func.date(ModelPost.time_created) <= date_to,
-                                                            ModelPost.author_id==user_id))
+            query = db.session.query(ModelPost).filter(
+                and_(
+                    func.date(ModelPost.time_created) >= date_from,
+                    func.date(ModelPost.time_created) <= date_to,
+                    ModelPost.author_id == user_id,
+                )
+            )
         else:
-            query = db.session.query(ModelPost).filter(and_(func.date(ModelPost.time_created) >= date_from,
-                                                            func.date(ModelPost.time_created) <= date_to))
+            query = db.session.query(ModelPost).filter(
+                and_(
+                    func.date(ModelPost.time_created) >= date_from,
+                    func.date(ModelPost.time_created) <= date_to,
+                )
+            )
         return [e for e in query]

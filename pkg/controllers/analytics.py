@@ -16,13 +16,19 @@ router = APIRouter(
 
 
 @router.get("/likes_by_day")
-def likes_by_day(date_from: str = Query(default=None, max_length=50), date_to: str= Query(default=None, max_length=50), current_user: User = Depends(TokenAdapter.get_current_active_user)):
-    time_format = '%Y-%m-%d' # TODO: move to env
+def likes_by_day(
+    date_from: str = Query(default=None, max_length=50),
+    date_to: str = Query(default=None, max_length=50),
+    current_user: User = Depends(TokenAdapter.get_current_active_user),
+):
+    time_format = "%Y-%m-%d"  # TODO: move to env
     date_from_obj = datetime.strptime(date_from, time_format)
     date_to_obj = datetime.strptime(date_to, time_format)
 
     # TODO: do to likes by day, not posts
-    posts = PostDBAdapter.get_posts_by_user_date(date_from_obj, date_to_obj, current_user.id)
+    posts = PostDBAdapter.get_posts_by_user_date(
+        date_from_obj, date_to_obj, current_user.id
+    )
     likes_by_day = {}
     for post in posts:
         date = post.time_created
@@ -33,8 +39,8 @@ def likes_by_day(date_from: str = Query(default=None, max_length=50), date_to: s
 
 @router.get("/likes_by_day_general")
 def likes_by_day(date_from: str, date_to: str):
-    date_from_obj = datetime.strptime(date_from, '%y/%m/%d')
-    date_to_obj = datetime.strptime(date_to, '%y/%m/%d')
+    date_from_obj = datetime.strptime(date_from, "%y/%m/%d")
+    date_to_obj = datetime.strptime(date_to, "%y/%m/%d")
     # TODO: calculate by day
 
     # TODO: check user exists

@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from adapters.contract import PostgresEnv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-load_dotenv(os.path.join(BASE_DIR, 'local.env'))
+load_dotenv(os.path.join(BASE_DIR, "local.env"))
 sys.path.append(BASE_DIR)
 
 
@@ -21,7 +21,7 @@ sys.path.append(BASE_DIR)
 config = context.config
 
 #  Making a connection
-config.set_main_option('sqlalchemy.url', PostgresEnv.get_url())
+config.set_main_option("sqlalchemy.url", PostgresEnv.get_url())
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -29,6 +29,7 @@ fileConfig(config.config_file_name)
 
 
 from models.models import Base
+
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
@@ -79,9 +80,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()
