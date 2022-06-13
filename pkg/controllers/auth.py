@@ -1,4 +1,4 @@
-# TODO user authentification functionality controllers
+# user authentication controllers
 from datetime import timedelta
 
 from fastapi import APIRouter
@@ -9,38 +9,11 @@ from adapters.token import Token, TokenAdapter
 from adapters.db import UserDBAdapter
 from models.schema import User
 
-# from ..dependencies import get_token_header
-
 router = APIRouter(
     prefix="/auth",
     tags=["auth"],
-    # dependencies=[Depends(get_token_header)], TODO recheck
     responses={404: {"description": "Not found"}},
 )
-
-
-@router.post("/signup")
-def signup(username: str, password: str):
-    # TODO: check user exists
-    # TODO: validate password
-    # TODO: add user
-    return "user successfully created"
-
-
-@router.post("/login")
-def login(username: str, password: str):
-    # TODO: check credentials valid exists
-    # TODO: YES: return token
-    # TODO: NO: return error
-    pass
-
-
-@router.post("/logout")
-def logout(token: str):
-    # TODO: check token active
-    # TODO: YES: return success, kill token
-    # TODO: NO: return error
-    pass
 
 
 @router.post("/token", response_model=Token)
@@ -57,10 +30,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = TokenAdapter.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
+    UserDBAdapter.update_last_login(user)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/me/", response_model=User)
 async def read_users_me(current_user: User = Depends(TokenAdapter.get_current_active_user)):
-    current_user = await current_user
     return current_user

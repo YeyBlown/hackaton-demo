@@ -53,7 +53,7 @@ class TokenAdapter:
         return encoded_jwt
 
     @staticmethod
-    async def get_current_user(token: str = Depends(oauth2_scheme)):
+    def get_current_user(token: str = Depends(oauth2_scheme)):
         credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
@@ -72,8 +72,8 @@ class TokenAdapter:
         return user
 
     @staticmethod
-    async def get_current_active_user(current_user: UserModel = Depends(get_current_user)):
-        # TODO: should i rework this to sync?
+    def get_current_active_user(current_user: UserModel = Depends(get_current_user)):
+        # TODO: do i even need this?
         # TODO: should i use class before last param?
         # if current_user.disabled:  # TODO: should i add disabled to user BaseModel or token BaseModel?
         #     raise HTTPException(status_code=400, detail="Inactive user")

@@ -27,6 +27,13 @@ def view():
 
 @router.get("/view/my")
 async def view_my(current_user: SchemaUser = Depends(TokenAdapter.get_current_active_user)):
-    current_user = await current_user
     posts = current_user.posts_created
     return posts
+
+
+@router.get("/activity/{username}")
+def user_activity(username: str):
+    # TODO: check user exists
+    # TODO: NO: return error
+    user = UserDBAdapter.get_user_by_username(username)
+    return {'last_login': user.time_last_login, 'last_activity': user.time_last_activity}

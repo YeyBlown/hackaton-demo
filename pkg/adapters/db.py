@@ -1,8 +1,12 @@
-# TODO: handle relations post-user on create-like-unlike-delete actions
 # TODO: ensure thread safe
 # TODO: should i move to DBFacade?
 # TODO: handle exceptions (already liked, not exists...)
+# TODO: create like instance in different database
+import datetime
+from typing import Optional
+
 from fastapi_sqlalchemy import db
+from sqlalchemy import and_, func
 
 from adapters.hash_utils import HashUtils
 from models.models import User as ModelUser
@@ -55,6 +59,20 @@ class UserDBAdapter:
         db.session.commit()
         return db_user
 
+    @staticmethod
+    def update_last_login(user: ModelUser):
+        time_now = datetime.datetime.now()
+        user.time_last_login = time_now
+        db.session.add(user)
+        db.session.commit()
+
+    @staticmethod
+    def update_last_activity(user: ModelUser):
+        time_now = datetime.datetime.now()
+        user.time_last_activity = time_now
+        db.session.add(user)
+        db.session.commit()
+
 
 class PostDBAdapter:
     @staticmethod
@@ -90,3 +108,17 @@ class PostDBAdapter:
     def get_posts_by_user(user_id: int):
         posts = db.session.query(ModelPost).filter_by(author_id=user_id)
         return posts
+
+    @staticmethod
+    def get_posts_by_user_date(date_from: datetime.datetime,
+                               date_to: datetime.datetime,
+                               user_id: Optional[int] = None):
+        # TODO: refactor prettier
+        if user_id is not None:
+            query = db.session.query(ModelPost).filter(and_(func.date(ModelPost.time_created) >= date_from,
+                                                            func.date(ModelPost.time_created) <= date_to,
+                                                            ModelPost.author_id==user_id))
+        else:
+            query = db.session.query(ModelPost).filter(and_(func.date(ModelPost.time_created) >= date_from,
+                                                            func.date(ModelPost.time_created) <= date_to))
+        return [e for e in query]

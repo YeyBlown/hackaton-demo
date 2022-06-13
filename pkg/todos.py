@@ -10,3 +10,4 @@
 # TODO: store tokens in reddit i guess?
 # TODO: add exception handling(DB)
 # TODO: add jwt bearer check to secure controllers
+# TODO: recheck typing everywhere
