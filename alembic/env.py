@@ -11,10 +11,10 @@ import sys
 from dotenv import load_dotenv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-load_dotenv(os.path.join(BASE_DIR, "local.env"))
+load_dotenv(os.path.join(BASE_DIR, "pkg/local.env"))
 sys.path.append(BASE_DIR)
 
-from adapters.contract import PostgresEnv
+from pkg.adapters.contract import PostgresEnv
 
 
 # This is the Alembic Config object, which provides
@@ -29,7 +29,7 @@ config.set_main_option("sqlalchemy.url", PostgresEnv.get_url())
 fileConfig(config.config_file_name)
 
 
-from models.models import Base
+from pkg.models.models import Base
 
 # add your model's MetaData object here
 # for 'autogenerate' support

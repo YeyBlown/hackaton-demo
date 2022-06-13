@@ -1,5 +1,5 @@
 # TODO: ensure thread safe
-# TODO: should i move to DBFacade?
+# TODO: should i move to DBFacade? Or just refactor the module
 # TODO: handle exceptions (already liked, not exists...)
 # TODO: create like instance in different database
 import datetime
