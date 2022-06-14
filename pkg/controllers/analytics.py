@@ -3,7 +3,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, Query
 
-from adapters.db import PostDBAdapter
+from adapters.db import DBFacade
 from adapters.token import TokenAdapter
 from models.schema import User
 
@@ -26,7 +26,7 @@ def likes_by_day(
     date_to_obj = datetime.strptime(date_to, time_format)
 
     # TODO: do to likes by day, not posts
-    posts = PostDBAdapter.get_posts_by_user_date(
+    posts = DBFacade().get_posts_by_user_date(
         date_from_obj, date_to_obj, current_user.id
     )
     likes_by_day = {}

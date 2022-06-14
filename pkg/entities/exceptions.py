@@ -8,3 +8,7 @@ class PostIsNotLikedException(BaseException):
 
 class UsernameBusyException(BaseException):
     pass
+
+
+class ObjectDoesNotExistException(BaseException):
+    pass

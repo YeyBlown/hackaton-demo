@@ -1,8 +1,8 @@
 # posts related controllers here
 from fastapi import APIRouter, Depends
 
-from adapters.db import PostDBAdapter, UserDBAdapter, LikeDBAdapter
-from entities.exceptions import PostAlreadyLikedException, PostIsNotLikedException
+from adapters.db import DBFacade
+from entities.exceptions import PostAlreadyLikedException, PostIsNotLikedException, ObjectDoesNotExistException
 from models.schema import Post as SchemaPost
 from models.schema import User
 from adapters.token import TokenAdapter
@@ -18,9 +18,7 @@ router = APIRouter(
 async def create(
     post: SchemaPost, current_user: User = Depends(TokenAdapter.get_current_active_user)
 ):
-    db_post = PostDBAdapter.create_post(post)
-    _ = UserDBAdapter.add_post_created(current_user, db_post)
-    UserDBAdapter.update_last_activity(current_user)
+    db_post = DBFacade().create_post(current_user, post)
     return db_post
 
 
@@ -28,12 +26,12 @@ async def create(
 async def like(
     post_id: int, current_user: User = Depends(TokenAdapter.get_current_active_user)
 ):
-    post = PostDBAdapter.get_post_by_id(post_id)
     try:
-        like_db = LikeDBAdapter.create(current_user, post)
-    except PostAlreadyLikedException as _:
+        like_db = DBFacade().like(current_user, post_id)
+    except PostAlreadyLikedException:
         return {"error": 'already liked'}
-    UserDBAdapter.update_last_activity(current_user)
+    except ObjectDoesNotExistException:
+        return {"error": 'post does not exist'}
     return like_db
 
 
@@ -41,16 +39,15 @@ async def like(
 async def unlike(
     post_id: int, current_user: User = Depends(TokenAdapter.get_current_active_user)
 ):
-    post = PostDBAdapter.get_post_by_id(post_id)
     try:
-        like_db = LikeDBAdapter.remove(current_user, post)
-    except PostIsNotLikedException as _:
-        return 'not yet liked to unlike'
-    UserDBAdapter.update_last_activity(current_user)
-    return like_db
+        DBFacade().unlike(current_user, post_id)
+    except PostIsNotLikedException:
+        return {"error": 'not yet liked liked'}
+    except ObjectDoesNotExistException:
+        return {"error": 'post does not exist'}
 
 
 @router.get("/view")
 def view():
-    posts = PostDBAdapter.get_all_posts()
+    posts = DBFacade().get_all_posts()
     return posts

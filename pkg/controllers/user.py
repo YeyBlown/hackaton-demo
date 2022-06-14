@@ -1,9 +1,10 @@
 # TODO: users related controllers here
 from fastapi import APIRouter, Depends
 
-from adapters.db import UserDBAdapter
+from adapters.db import DBFacade
 from adapters.token import TokenAdapter
 from models.schema import User as SchemaUser
+from models.models import User as ModelUser
 
 router = APIRouter(
     prefix="/user",
@@ -14,20 +15,19 @@ router = APIRouter(
 
 @router.post("/create", response_model=SchemaUser)
 def create(user: SchemaUser):
-    # TODO
-    db_user = UserDBAdapter.create_user(user)
+    db_user = DBFacade().create_user(user)
     return db_user
 
 
 @router.get("/view")
 def view():
-    users = UserDBAdapter.get_all_users()
+    users = DBFacade().get_all_users()
     return users
 
 
 @router.get("/view/my")
 async def view_my(
-    current_user: SchemaUser = Depends(TokenAdapter.get_current_active_user),
+    current_user: ModelUser = Depends(TokenAdapter.get_current_active_user),
 ):
     posts = current_user.posts_created
     return posts
@@ -35,9 +35,10 @@ async def view_my(
 
 @router.get("/activity/{username}")
 def user_activity(username: str):
-    # TODO: check user exists
-    # TODO: NO: return error
-    user = UserDBAdapter.get_user_by_username(username)
+    # TODO: check error properly returned
+    user = DBFacade().get_user_by_username(username)
+    if not user:
+        return {"error": "user does not exist"}
     return {
         "last_login": user.time_last_login,
         "last_activity": user.time_last_activity,

@@ -8,4 +8,4 @@
 # TODO: add exception handling(DB)
 # TODO: recheck typing everywhere
 # TODO: create requirements.txt
-# TODO: comment code out
+# TODO: comment code out (documentation)

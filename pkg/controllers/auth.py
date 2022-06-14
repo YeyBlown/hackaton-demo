@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from adapters.token import Token, TokenAdapter
-from adapters.db import UserDBAdapter
+from adapters.db import DBFacade
 from models.schema import User
 
 router = APIRouter(
@@ -18,7 +18,8 @@ router = APIRouter(
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = UserDBAdapter.get_user_by_username(form_data.username)
+    db = DBFacade()
+    user = db.get_user_by_username(form_data.username)
     user = TokenAdapter.authenticate_user(user, form_data.password)
     if not user:
         raise HTTPException(
@@ -30,7 +31,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = TokenAdapter.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    UserDBAdapter.update_last_login(user)
+    db.update_last_login(user)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
