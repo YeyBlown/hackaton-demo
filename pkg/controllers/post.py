@@ -16,7 +16,7 @@ router = APIRouter(
 
 @router.post("/create", response_model=SchemaPost)
 async def create(
-    post: SchemaPost, current_user: User = Depends(TokenAdapter.get_current_active_user)
+    post: SchemaPost, current_user: User = Depends(TokenAdapter.get_current_user)
 ):
     db_post = DBFacade().create_post(current_user, post)
     return db_post
@@ -24,7 +24,7 @@ async def create(
 
 @router.post("/like")
 async def like(
-    post_id: int, current_user: User = Depends(TokenAdapter.get_current_active_user)
+    post_id: int, current_user: User = Depends(TokenAdapter.get_current_user)
 ):
     try:
         like_db = DBFacade().like(current_user, post_id)
@@ -37,7 +37,7 @@ async def like(
 
 @router.post("/unlike")
 async def unlike(
-    post_id: int, current_user: User = Depends(TokenAdapter.get_current_active_user)
+    post_id: int, current_user: User = Depends(TokenAdapter.get_current_user)
 ):
     try:
         DBFacade().unlike(current_user, post_id)

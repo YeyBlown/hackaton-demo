@@ -4,22 +4,9 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from pydantic import BaseModel
 
 from adapters.db import DBFacade
 from adapters.hash_utils import HashUtils
-
-from models.schema import User as UserModel
-
-
-# TODO: move tokens to models
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class UserInDB(UserModel):
-    hashed_password: str
 
 
 class TokenAdapter:
@@ -74,11 +61,3 @@ class TokenAdapter:
         if user is None:
             raise credentials_exception
         return user
-
-    @staticmethod
-    def get_current_active_user(current_user: UserModel = Depends(get_current_user)):
-        # TODO: do i even need this?
-        # TODO: should i use class before last param?
-        # if current_user.disabled:  # TODO: should i add disabled to user BaseModel or token BaseModel?
-        #     raise HTTPException(status_code=400, detail="Inactive user")
-        return current_user

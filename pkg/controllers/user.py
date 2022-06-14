@@ -27,7 +27,7 @@ def view():
 
 @router.get("/view/my")
 async def view_my(
-    current_user: ModelUser = Depends(TokenAdapter.get_current_active_user),
+    current_user: ModelUser = Depends(TokenAdapter.get_current_user),
 ):
     posts = current_user.posts_created
     return posts

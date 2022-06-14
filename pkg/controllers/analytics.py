@@ -10,7 +10,6 @@ from models.schema import User
 router = APIRouter(
     prefix="/analytics",
     tags=["analytics"],
-    # dependencies=[Depends(get_token_header)], TODO: recheck
     responses={404: {"description": "Not found"}},
 )
 
@@ -19,7 +18,7 @@ router = APIRouter(
 def likes_by_day(
     date_from: str = Query(default=None, max_length=50),
     date_to: str = Query(default=None, max_length=50),
-    current_user: User = Depends(TokenAdapter.get_current_active_user),
+    current_user: User = Depends(TokenAdapter.get_current_user),
 ):
     time_format = "%Y-%m-%d"  # TODO: move to env
     date_from_obj = datetime.strptime(date_from, time_format)
