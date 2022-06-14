@@ -1,5 +1,4 @@
 # TODO: recheck all exceptions handled
-# TODO: should i store date of like instead of datetime to group by
 import datetime
 import threading
 from typing import Optional
@@ -121,6 +120,10 @@ class DBFacade:
         db.session.query(ModelLike).filter(and_(ModelLike.id == like.id)).delete()
         UserDBAdapter.update_last_activity(user)
 
+    @staticmethod
+    def get_all_likes():
+        return db.session.query(ModelLike).all()
+
 
 class UserDBAdapter:
 
@@ -214,11 +217,14 @@ class LikeDBAdapter:
     def create(user: ModelUser, post: ModelPost):
         if LikeDBAdapter.is_like_exists(user.id, post.id):
             raise PostAlreadyLikedException()
+        day_created = datetime.date.today()
+        time_created = datetime.datetime(year=day_created.year, month=day_created.month, day=day_created.day)
         like_db = ModelLike(
             user_id=user.id,
             post_id=post.id,
             user=user,
-            post=post
+            post=post,
+            time_created=time_created
         )
         db.session.add(like_db)
         db.session.commit()
@@ -252,5 +258,5 @@ class LikeDBAdapter:
                     func.date(ModelLike.time_created) <= date_to,
                     ModelLike.user_id == user_id,
                 )
-        query = db.session.query(ModelLike).filter(condition)
+        query = db.session.query(ModelLike.time_created, func.count(ModelLike.time_created)).filter(condition).group_by(ModelLike.time_created)
         return [e for e in query]

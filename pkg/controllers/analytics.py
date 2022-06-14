@@ -42,12 +42,14 @@ def likes_by_day(date_from: str, date_to: str):
     date_from_obj = datetime.strptime(date_from, time_format)
     date_to_obj = datetime.strptime(date_to, time_format)
 
-    posts = DBFacade().get_likes_by_user_date(
+    date_likes_tuples = DBFacade().get_likes_by_user_date(
         date_from_obj, date_to_obj
     )
-    likes_by_day = {}
-    for post in posts:
-        date = post.time_created
-        date = date.strftime(time_format)
-        likes_by_day[date] = likes_by_day.get(date, 0) + 1
+    likes_by_day = {date: likes for date, likes in date_likes_tuples}
     return likes_by_day
+
+
+@router.get("/get_all_likes")
+def get_all_likes():
+    likes = DBFacade.get_all_likes()
+    return likes

@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
-from contract import EncryptionEnv
+from adapters.contract import EncryptionEnv
 from adapters.db import DBFacade
 from adapters.hash_utils import HashUtils
 
@@ -13,7 +13,7 @@ class TokenAdapter:
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl=EncryptionEnv.get_token_url())
     SECRET_KEY = EncryptionEnv.get_token_secret_key()
     ALGORITHM = EncryptionEnv.get_token_algorithm()
-    ACCESS_TOKEN_EXPIRE_MINUTES = EncryptionEnv.get_access_token_expire_minutes()
+    ACCESS_TOKEN_EXPIRE_MINUTES = int(EncryptionEnv.get_access_token_expire_minutes())
 
     @staticmethod
     def authenticate_user(user, password: str):
