@@ -1,4 +1,4 @@
-# TODO: users related controllers here
+# users related controllers here
 from fastapi import APIRouter, Depends
 
 from adapters.db import DBFacade
@@ -35,7 +35,6 @@ async def view_my(
 
 @router.get("/activity/{username}")
 def user_activity(username: str):
-    # TODO: check error properly returned
     user = DBFacade().get_user_by_username(username)
     if not user:
         return {"error": "user does not exist"}

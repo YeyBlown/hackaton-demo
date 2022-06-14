@@ -90,14 +90,14 @@ class DBFacade:
         return posts_by_user
 
     @lock_decorator(_lock)
-    def get_posts_by_user_date(
+    def get_likes_by_user_date(
             self,
             date_from: datetime.datetime,
             date_to: datetime.datetime,
             user_id: Optional[int] = None,
     ):
-        posts = PostDBAdapter.get_posts_by_user_date(date_from, date_to, user_id)
-        return posts
+        likes = LikeDBAdapter.get_likes_by_user_date(date_from, date_to, user_id)
+        return likes
 
     @lock_decorator(_lock)
     def like(self, user: ModelUser, post_id: int):
@@ -197,23 +197,6 @@ class PostDBAdapter:
         return posts
 
     @staticmethod
-    def get_posts_by_user_date(
-        date_from: datetime.datetime,
-        date_to: datetime.datetime,
-        user_id: Optional[int] = None,
-    ):
-        condition = and_(
-                    func.date(ModelPost.time_created) >= date_from,
-                    func.date(ModelPost.time_created) <= date_to,
-                ) if user_id is None else and_(
-                    func.date(ModelPost.time_created) >= date_from,
-                    func.date(ModelPost.time_created) <= date_to,
-                    ModelPost.author_id == user_id,
-                )
-        query = db.session.query(ModelPost).filter(condition)
-        return [e for e in query]
-
-    @staticmethod
     def _add_like(post: ModelPost, like: ModelLike):
         post.likes.append(like)
         db.session.add(like)
@@ -254,3 +237,20 @@ class LikeDBAdapter:
             )
         ).first()
         return like
+
+    @staticmethod
+    def get_likes_by_user_date(
+        date_from: datetime.datetime,
+        date_to: datetime.datetime,
+        user_id: Optional[int] = None,
+    ):
+        condition = and_(
+                    func.date(ModelLike.time_created) >= date_from,
+                    func.date(ModelLike.time_created) <= date_to,
+                ) if user_id is None else and_(
+                    func.date(ModelLike.time_created) >= date_from,
+                    func.date(ModelLike.time_created) <= date_to,
+                    ModelLike.user_id == user_id,
+                )
+        query = db.session.query(ModelLike).filter(condition)
+        return [e for e in query]
