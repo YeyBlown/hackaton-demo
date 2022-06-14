@@ -7,14 +7,6 @@ from sqlalchemy.sql import func
 Base = declarative_base()
 
 
-# association_table = Table(
-#     "association",
-#     Base.metadata,
-#     Column("post_id", ForeignKey("post.id")),
-#     Column("user_id", ForeignKey("user.id")),
-# )
-
-
 class Post(Base):
     __tablename__ = "post"
     id = Column(Integer, primary_key=True, index=True)

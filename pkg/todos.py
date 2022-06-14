@@ -1,4 +1,3 @@
-# TODO: recheck all exceptions handled(DB)
 # TODO: BOT!
 # TODO: recheck typing everywhere
 # TODO: add meaning to exceptions

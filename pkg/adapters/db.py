@@ -1,4 +1,3 @@
-# TODO: recheck all exceptions handled
 import datetime
 import threading
 from typing import Optional
@@ -78,11 +77,6 @@ class DBFacade:
         UserDBAdapter.add_post_created(user, post_db)
         UserDBAdapter.update_last_activity(user)
         return post_db
-
-    @lock_decorator(_lock)
-    def get_post_by_id(self, post_id: int):
-        post = PostDBAdapter.get_post_by_id(post_id)
-        return post
 
     @lock_decorator(_lock)
     def get_all_posts(self):
@@ -192,6 +186,8 @@ class PostDBAdapter:
     @staticmethod
     def get_post_by_id(post_id: int):
         post = db.session.query(ModelPost).filter_by(id=post_id).first()
+        if not post:
+            raise ObjectDoesNotExistException()
         return post
 
     @staticmethod
@@ -239,7 +235,11 @@ class LikeDBAdapter:
 
     @staticmethod
     def is_like_exists(user_id: id, post_id: id):
-        return True if LikeDBAdapter.get_like(user_id, post_id) else False
+        try:
+            LikeDBAdapter.get_like(user_id, post_id)
+            return True
+        except ObjectDoesNotExistException:
+            return False
 
     @staticmethod
     def get_like(user_id: id, post_id: id):
@@ -248,6 +248,8 @@ class LikeDBAdapter:
             .filter(and_(ModelLike.user_id == user_id, ModelLike.post_id == post_id))
             .first()
         )
+        if not like:
+            raise ObjectDoesNotExistException()
         return like
 
     @staticmethod
