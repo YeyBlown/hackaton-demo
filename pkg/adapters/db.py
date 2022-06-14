@@ -35,27 +35,30 @@ class DBFacade:
 
     @staticmethod
     def lock_decorator(lock):
-        def wrapper(fn):
-            with lock:
-                fn()
-        return wrapper
+        def decorator(fn):
+            def wrapper(*args, **kwargs):
+                with lock:
+                    result = fn(*args, **kwargs)
+                return result
+            return wrapper
+        return decorator
 
     def __init__(self):
         self._session = db
 
     @lock_decorator(_lock)
     def get_user_by_username(self, username: str):
-        user = UserDBAdapter.get_user_by_username(username)
+        user = db.session.query(ModelUser).filter_by(username=username).first()
         return user
 
     @lock_decorator(_lock)
     def get_user_by_id(self, user_id: int):
-        user = UserDBAdapter.get_user_by_id(user_id)
+        user = db.session.query(ModelUser).filter_by(id=user_id).first()
         return user
 
     @lock_decorator(_lock)
     def get_all_users(self):
-        users = UserDBAdapter.get_all_users()
+        users = db.session.query(ModelUser).all()
         return users
 
     @lock_decorator(_lock)
@@ -116,20 +119,6 @@ class DBFacade:
 
 
 class UserDBAdapter:
-    @staticmethod
-    def get_user_by_username(username: str):
-        user = db.session.query(ModelUser).filter_by(username=username).first()
-        return user
-
-    @staticmethod
-    def get_user_by_id(user_id: int):
-        user = db.session.query(ModelUser).filter_by(id=user_id).first()
-        return user
-
-    @staticmethod
-    def get_all_users():
-        users = db.session.query(ModelUser).all()
-        return users
 
     @staticmethod
     def add_post_created(user: ModelUser, post: ModelPost):
