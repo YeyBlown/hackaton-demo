@@ -19,6 +19,7 @@ from models.models import Like as ModelLike
 
 from models.schema import Post as SchemaPost
 from models.schema import User as SchemaUser
+from services.datetimeservice import DateTimeService
 
 
 class DBFacade:
@@ -252,10 +253,7 @@ class _LikeDBAdapter:
         """creates new like from user to post"""
         if _LikeDBAdapter.is_like_exists(user.id, post.id):
             raise PostAlreadyLikedException()
-        day_created = datetime.date.today()
-        time_created = datetime.datetime(
-            year=day_created.year, month=day_created.month, day=day_created.day
-        )
+        time_created = DateTimeService.get_today_datetime()
         like_db = ModelLike(
             user_id=user.id,
             post_id=post.id,
