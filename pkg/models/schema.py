@@ -1,4 +1,6 @@
-# build a schema using pydantic
+""" objects schema by pydantic """
+# pylint: disable=no-name-in-module,no-self-argument
+# pylint: disable=missing-function-docstring,missing-class-docstring
 from pydantic import BaseModel
 
 

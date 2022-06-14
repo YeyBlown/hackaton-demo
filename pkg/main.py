@@ -1,10 +1,10 @@
-# TODO: load parameters
+"""main and only application entrypoint"""
 from dotenv import load_dotenv
-import uvicorn as uvicorn
+import uvicorn
 from fastapi import FastAPI
 from fastapi_sqlalchemy import DBSessionMiddleware
 
-from adapters.contract import PostgresEnv
+from adapters.contract import PostgresEnv, AppEnv
 
 from controllers import auth, post, api, user
 
@@ -22,11 +22,6 @@ app.include_router(user.router)
 app.add_middleware(DBSessionMiddleware, db_url=PostgresEnv.get_url())
 
 
-@app.get("/")
-async def root():
-    return {"message": "hello world"}
-
-
 # To run locally
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=AppEnv.get_app_host(), port=AppEnv.get_app_port())

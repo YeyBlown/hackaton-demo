@@ -1,15 +1,15 @@
-# posts related controllers here
+""" posts related controllers here"""
 from fastapi import APIRouter, Depends
 
 from adapters.db import DBFacade
+from services.token import TokenService
 from entities.exceptions import (
     PostAlreadyLikedException,
     PostIsNotLikedException,
     ObjectDoesNotExistException,
 )
 from models.schema import Post as SchemaPost
-from models.schema import User
-from adapters.token import TokenAdapter
+from models.models import User as ModelUser
 
 router = APIRouter(
     prefix="/post",
@@ -20,16 +20,18 @@ router = APIRouter(
 
 @router.post("/create", response_model=SchemaPost)
 async def create(
-    post: SchemaPost, current_user: User = Depends(TokenAdapter.get_current_user)
+    post: SchemaPost, current_user: ModelUser = Depends(TokenService.get_current_user)
 ):
+    """creates new post by schema"""
     db_post = DBFacade().create_post(current_user, post)
     return db_post
 
 
 @router.post("/like")
 async def like(
-    post_id: int, current_user: User = Depends(TokenAdapter.get_current_user)
+    post_id: int, current_user: ModelUser = Depends(TokenService.get_current_user)
 ):
+    """likes post as current_user by post_id"""
     try:
         like_db = DBFacade().like(current_user, post_id)
     except PostAlreadyLikedException:
@@ -41,8 +43,9 @@ async def like(
 
 @router.post("/unlike")
 async def unlike(
-    post_id: int, current_user: User = Depends(TokenAdapter.get_current_user)
+    post_id: int, current_user: ModelUser = Depends(TokenService.get_current_user)
 ):
+    """removes like as current_user by post_id"""
     try:
         DBFacade().unlike(current_user, post_id)
     except PostIsNotLikedException:
@@ -53,5 +56,6 @@ async def unlike(
 
 @router.get("/view")
 def view():
+    """returns all posts to see"""
     posts = DBFacade().get_all_posts()
     return posts

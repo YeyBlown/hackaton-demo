@@ -1,4 +1,5 @@
-# config logic here
+"""config logic here"""
+# pylint: disable=missing-function-docstring,missing-class-docstring
 
 
 import os
@@ -59,3 +60,16 @@ class DateTimeEnv:
     @staticmethod
     def get_date_format():
         return DateTimeEnv.date_format
+
+
+class AppEnv:
+    app_host = os.getenv("APP_HOST")
+    app_port = int(os.getenv("APP_PORT"))
+
+    @staticmethod
+    def get_app_host():
+        return AppEnv.app_host
+
+    @staticmethod
+    def get_app_port():
+        return AppEnv.app_port
