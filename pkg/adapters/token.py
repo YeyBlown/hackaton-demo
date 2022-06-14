@@ -1,24 +1,19 @@
-# TODO: refactor
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
+from contract import EncryptionEnv
 from adapters.db import DBFacade
 from adapters.hash_utils import HashUtils
 
 
 class TokenAdapter:
-
-    # TODO: move hard variables to contract, please :)
-    oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-    # to get a string like this run:
-    # openssl rand -hex 32
-    SECRET_KEY = "5d8ff4f4a643f60dd33e0eeafb03fb8741578db760b4b4b08268041cd66d3195"
-    ALGORITHM = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES = 30
+    oauth2_scheme = OAuth2PasswordBearer(tokenUrl=EncryptionEnv.get_token_url())
+    SECRET_KEY = EncryptionEnv.get_token_secret_key()
+    ALGORITHM = EncryptionEnv.get_token_algorithm()
+    ACCESS_TOKEN_EXPIRE_MINUTES = EncryptionEnv.get_access_token_expire_minutes()
 
     @staticmethod
     def authenticate_user(user, password: str):

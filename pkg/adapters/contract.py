@@ -27,7 +27,35 @@ class PostgresEnv:
 
 class EncryptionEnv:
     hash_encryption_schema = os.getenv("HASH_ENCRYPTION_SCHEMA")
+    token_url = os.getenv("TOKEN_URL")
+    token_secret_key = os.getenv("TOKEN_SECRET_KEY")
+    token_algorithm = os.getenv("TOKEN_ALGORITHM")
+    access_token_expire_minutes = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
     @staticmethod
     def get_hash_encryption_schema():
         return EncryptionEnv.hash_encryption_schema
+
+    @staticmethod
+    def get_token_url():
+        return EncryptionEnv.token_url
+
+    @staticmethod
+    def get_token_secret_key():
+        return EncryptionEnv.token_secret_key
+
+    @staticmethod
+    def get_token_algorithm():
+        return EncryptionEnv.token_algorithm
+
+    @staticmethod
+    def get_access_token_expire_minutes():
+        return EncryptionEnv.access_token_expire_minutes
+
+
+class DateTimeEnv:
+    date_format = os.getenv("DATE_FORMAT")
+
+    @staticmethod
+    def get_date_format():
+        return DateTimeEnv.date_format

@@ -3,6 +3,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, Query
 
+from adapters.contract import DateTimeEnv
 from adapters.db import DBFacade
 from adapters.token import TokenAdapter
 from models.schema import User
@@ -20,10 +21,10 @@ def likes_by_day(
     date_to: str = Query(default=None, max_length=50),
     current_user: User = Depends(TokenAdapter.get_current_user),
 ):
-    time_format = "%Y-%m-%d"  # TODO: move to env
+    time_format = DateTimeEnv.get_date_format()
     date_from_obj = datetime.strptime(date_from, time_format)
     date_to_obj = datetime.strptime(date_to, time_format)
-
+    # TODO: extract common time-related and likes-by-dat functionality
     posts = DBFacade().get_likes_by_user_date(
         date_from_obj, date_to_obj, current_user.id
     )
@@ -37,7 +38,7 @@ def likes_by_day(
 
 @router.get("/likes_by_day_general")
 def likes_by_day(date_from: str, date_to: str):
-    time_format = "%Y-%m-%d"  # TODO: move to env
+    time_format = DateTimeEnv.get_date_format()
     date_from_obj = datetime.strptime(date_from, time_format)
     date_to_obj = datetime.strptime(date_to, time_format)
 

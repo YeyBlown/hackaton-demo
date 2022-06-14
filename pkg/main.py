@@ -1,5 +1,4 @@
 # TODO: load parameters
-# TODO: do we need startup scripts? Do we place them here?
 from dotenv import load_dotenv
 import uvicorn as uvicorn
 from fastapi import FastAPI
