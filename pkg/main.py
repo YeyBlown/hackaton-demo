@@ -6,7 +6,7 @@ from fastapi_sqlalchemy import DBSessionMiddleware
 
 from adapters.contract import PostgresEnv
 
-from controllers import auth, post, analytics, user
+from controllers import auth, post, api, user
 
 
 load_dotenv("local.env")

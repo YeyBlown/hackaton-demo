@@ -6,11 +6,11 @@ from fastapi import APIRouter, Depends, Query
 from adapters.contract import DateTimeEnv
 from adapters.db import DBFacade
 from adapters.token import TokenAdapter
-from models.schema import User
+from models.models import User as ModelUser
 
 router = APIRouter(
-    prefix="/analytics",
-    tags=["analytics"],
+    prefix="/api",
+    tags=["api"],
     responses={404: {"description": "Not found"}},
 )
 
@@ -19,7 +19,7 @@ router = APIRouter(
 def likes_by_day(
     date_from: str = Query(default=None, max_length=50),
     date_to: str = Query(default=None, max_length=50),
-    current_user: User = Depends(TokenAdapter.get_current_user),
+    current_user: ModelUser = Depends(TokenAdapter.get_current_user),
 ):
     time_format = DateTimeEnv.get_date_format()
     date_from_obj = datetime.strptime(date_from, time_format)
@@ -36,15 +36,13 @@ def likes_by_day(
     return likes_by_day
 
 
-@router.get("/likes_by_day_general")
+@router.get("/all_likes_by_day")
 def likes_by_day(date_from: str, date_to: str):
     time_format = DateTimeEnv.get_date_format()
     date_from_obj = datetime.strptime(date_from, time_format)
     date_to_obj = datetime.strptime(date_to, time_format)
 
-    date_likes_tuples = DBFacade().get_likes_by_user_date(
-        date_from_obj, date_to_obj
-    )
+    date_likes_tuples = DBFacade().get_likes_by_user_date(date_from_obj, date_to_obj)
     likes_by_day = {date: likes for date, likes in date_likes_tuples}
     return likes_by_day
 

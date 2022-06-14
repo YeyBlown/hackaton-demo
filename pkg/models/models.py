@@ -25,9 +25,7 @@ class Post(Base):
     author_id = Column(Integer, ForeignKey("user.id"))
     author = relationship("User", back_populates="posts_created")
 
-    likes = relationship(
-        "Like", back_populates="post"
-    )
+    likes = relationship("Like", back_populates="post")
 
 
 class User(Base):
@@ -41,9 +39,7 @@ class User(Base):
 
     posts_created = relationship("Post", back_populates="author")
 
-    likes = relationship(
-        "Like", back_populates="user"
-    )  # TODO: review it works properly, configure deletes
+    likes = relationship("Like", back_populates="user")
 
 
 class Like(Base):

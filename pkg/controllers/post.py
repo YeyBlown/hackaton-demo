@@ -2,7 +2,11 @@
 from fastapi import APIRouter, Depends
 
 from adapters.db import DBFacade
-from entities.exceptions import PostAlreadyLikedException, PostIsNotLikedException, ObjectDoesNotExistException
+from entities.exceptions import (
+    PostAlreadyLikedException,
+    PostIsNotLikedException,
+    ObjectDoesNotExistException,
+)
 from models.schema import Post as SchemaPost
 from models.schema import User
 from adapters.token import TokenAdapter
@@ -29,9 +33,9 @@ async def like(
     try:
         like_db = DBFacade().like(current_user, post_id)
     except PostAlreadyLikedException:
-        return {"error": 'already liked'}
+        return {"error": "already liked"}
     except ObjectDoesNotExistException:
-        return {"error": 'post does not exist'}
+        return {"error": "post does not exist"}
     return like_db
 
 
@@ -42,9 +46,9 @@ async def unlike(
     try:
         DBFacade().unlike(current_user, post_id)
     except PostIsNotLikedException:
-        return {"error": 'not yet liked liked'}
+        return {"error": "not yet liked liked"}
     except ObjectDoesNotExistException:
-        return {"error": 'post does not exist'}
+        return {"error": "post does not exist"}
 
 
 @router.get("/view")

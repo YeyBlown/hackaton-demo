@@ -7,7 +7,11 @@ from fastapi_sqlalchemy import db
 from sqlalchemy import and_, func
 
 from adapters.hash_utils import HashUtils
-from entities.exceptions import PostAlreadyLikedException, PostIsNotLikedException, ObjectDoesNotExistException
+from entities.exceptions import (
+    PostAlreadyLikedException,
+    PostIsNotLikedException,
+    ObjectDoesNotExistException,
+)
 from models.models import User as ModelUser
 from models.models import Post as ModelPost
 from models.models import Like as ModelLike
@@ -36,7 +40,9 @@ class DBFacade:
                 with lock:
                     result = fn(*args, **kwargs)
                 return result
+
             return wrapper
+
         return decorator
 
     def __init__(self):
@@ -90,10 +96,10 @@ class DBFacade:
 
     @lock_decorator(_lock)
     def get_likes_by_user_date(
-            self,
-            date_from: datetime.datetime,
-            date_to: datetime.datetime,
-            user_id: Optional[int] = None,
+        self,
+        date_from: datetime.datetime,
+        date_to: datetime.datetime,
+        user_id: Optional[int] = None,
     ):
         likes = LikeDBAdapter.get_likes_by_user_date(date_from, date_to, user_id)
         return likes
@@ -126,7 +132,6 @@ class DBFacade:
 
 
 class UserDBAdapter:
-
     @staticmethod
     def add_post_created(user: ModelUser, post: ModelPost):
         user.posts_created.append(post)
@@ -218,13 +223,15 @@ class LikeDBAdapter:
         if LikeDBAdapter.is_like_exists(user.id, post.id):
             raise PostAlreadyLikedException()
         day_created = datetime.date.today()
-        time_created = datetime.datetime(year=day_created.year, month=day_created.month, day=day_created.day)
+        time_created = datetime.datetime(
+            year=day_created.year, month=day_created.month, day=day_created.day
+        )
         like_db = ModelLike(
             user_id=user.id,
             post_id=post.id,
             user=user,
             post=post,
-            time_created=time_created
+            time_created=time_created,
         )
         db.session.add(like_db)
         db.session.commit()
@@ -236,12 +243,11 @@ class LikeDBAdapter:
 
     @staticmethod
     def get_like(user_id: id, post_id: id):
-        like = db.session.query(ModelLike).filter(
-            and_(
-                ModelLike.user_id == user_id,
-                ModelLike.post_id == post_id
-            )
-        ).first()
+        like = (
+            db.session.query(ModelLike)
+            .filter(and_(ModelLike.user_id == user_id, ModelLike.post_id == post_id))
+            .first()
+        )
         return like
 
     @staticmethod
@@ -250,13 +256,21 @@ class LikeDBAdapter:
         date_to: datetime.datetime,
         user_id: Optional[int] = None,
     ):
-        condition = and_(
-                    func.date(ModelLike.time_created) >= date_from,
-                    func.date(ModelLike.time_created) <= date_to,
-                ) if user_id is None else and_(
-                    func.date(ModelLike.time_created) >= date_from,
-                    func.date(ModelLike.time_created) <= date_to,
-                    ModelLike.user_id == user_id,
-                )
-        query = db.session.query(ModelLike.time_created, func.count(ModelLike.time_created)).filter(condition).group_by(ModelLike.time_created)
+        condition = (
+            and_(
+                func.date(ModelLike.time_created) >= date_from,
+                func.date(ModelLike.time_created) <= date_to,
+            )
+            if user_id is None
+            else and_(
+                func.date(ModelLike.time_created) >= date_from,
+                func.date(ModelLike.time_created) <= date_to,
+                ModelLike.user_id == user_id,
+            )
+        )
+        query = (
+            db.session.query(ModelLike.time_created, func.count(ModelLike.time_created))
+            .filter(condition)
+            .group_by(ModelLike.time_created)
+        )
         return [e for e in query]
