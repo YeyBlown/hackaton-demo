@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import BaseModel
 
-from adapters.db import UserDBAdapter
+from adapters.db import DBFacade
 from adapters.hash_utils import HashUtils
 
 from models.schema import User as UserModel
@@ -70,7 +70,7 @@ class TokenAdapter:
                 raise credentials_exception
         except JWTError:
             raise credentials_exception
-        user = UserDBAdapter.get_user_by_username(username)
+        user = DBFacade().get_user_by_username(username)
         if user is None:
             raise credentials_exception
         return user

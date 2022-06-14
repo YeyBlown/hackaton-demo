@@ -1,7 +1,4 @@
-# TODO: ensure thread safe
-# TODO: should i move to DBFacade? Or just refactor the module
-# TODO: handle exceptions (already liked, not exists...)
-# TODO: create like instance in different database
+# TODO: recheck all exceptions handled
 # TODO: should i store date of like instead of datetime to group by
 import datetime
 import threading
@@ -108,13 +105,20 @@ class DBFacade:
         if not post:  # TODO: recheck works properly
             raise ObjectDoesNotExistException()
         like_db = LikeDBAdapter.create(user, post)
+        UserDBAdapter._add_like(user, like_db)
+        PostDBAdapter._add_like(post, like_db)
         UserDBAdapter.update_last_activity(user)
         return like_db
 
     @lock_decorator(_lock)
     def unlike(self, user: ModelUser, post_id: int):
         post = PostDBAdapter.get_post_by_id(post_id)
-        LikeDBAdapter.remove(user, post)
+        like = LikeDBAdapter.get_like(user.id, post.id)
+        if not like:
+            raise PostIsNotLikedException()
+        UserDBAdapter._remove_like(user, like)
+        PostDBAdapter._remove_like(post, like)
+        db.session.query(ModelLike).filter(and_(ModelLike.id == like.id)).delete()
         UserDBAdapter.update_last_activity(user)
 
 
@@ -198,22 +202,15 @@ class PostDBAdapter:
         date_to: datetime.datetime,
         user_id: Optional[int] = None,
     ):
-        # TODO: refactor prettier
-        if user_id is not None:
-            query = db.session.query(ModelPost).filter(
-                and_(
+        condition = and_(
+                    func.date(ModelPost.time_created) >= date_from,
+                    func.date(ModelPost.time_created) <= date_to,
+                ) if user_id is None else and_(
                     func.date(ModelPost.time_created) >= date_from,
                     func.date(ModelPost.time_created) <= date_to,
                     ModelPost.author_id == user_id,
                 )
-            )
-        else:
-            query = db.session.query(ModelPost).filter(
-                and_(
-                    func.date(ModelPost.time_created) >= date_from,
-                    func.date(ModelPost.time_created) <= date_to,
-                )
-            )
+        query = db.session.query(ModelPost).filter(condition)
         return [e for e in query]
 
     @staticmethod
@@ -242,34 +239,11 @@ class LikeDBAdapter:
         )
         db.session.add(like_db)
         db.session.commit()
-        UserDBAdapter._add_like(user, like_db)
-        PostDBAdapter._add_like(post, like_db)
-        db.session.commit()
         return like_db
 
     @staticmethod
-    def remove(user: ModelUser, post: ModelPost):
-        like = LikeDBAdapter.get_like(user.id, post.id)
-        if not like:
-            raise PostIsNotLikedException()
-
-        UserDBAdapter._remove_like(user, like)
-        PostDBAdapter._remove_like(post, like)
-
-        db.session.query(ModelLike).filter(and_(
-            ModelLike.id == like.id,
-            ModelLike.post_id == post.id
-        )).delete()
-
-    @staticmethod
     def is_like_exists(user_id: id, post_id: id):
-        like = db.session.query(ModelLike).filter(
-            and_(
-                ModelLike.user_id == user_id,
-                ModelLike.post_id == post_id
-            )
-        ).first()
-        return like
+        return True if LikeDBAdapter.get_like(user_id, post_id) else False
 
     @staticmethod
     def get_like(user_id: id, post_id: id):
