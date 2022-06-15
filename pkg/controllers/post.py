@@ -23,7 +23,7 @@ async def create(
     post: SchemaPost, current_user: ModelUser = Depends(TokenService.get_current_user)
 ):
     """creates new post by schema"""
-    db_post = DBFacade().create_post(current_user, post)
+    db_post = DBFacade().create_post(current_user, post, current_user.id)
     return db_post
 
 
