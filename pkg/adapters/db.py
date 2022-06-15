@@ -82,9 +82,9 @@ class DBFacade:
         _UserDBAdapter.update_last_login(user)
 
     @lock_decorator(_lock)
-    def create_post(self, user: SchemaUser, post: SchemaPost):
+    def create_post(self, user: SchemaUser, post: SchemaPost, author_id):
         """creates new post model by schema and stores it"""
-        post_db = _PostDBAdapter.create_post(post)
+        post_db = _PostDBAdapter.create_post(post, author_id)
         _UserDBAdapter.add_post_created(user, post_db)
         _UserDBAdapter.update_last_activity(user)
         return post_db
@@ -203,10 +203,10 @@ class _UserDBAdapter:
 
 class _PostDBAdapter:
     @staticmethod
-    def create_post(post: SchemaPost):
+    def create_post(post: SchemaPost, author_id):
         """creates and stores new post model by post schema"""
         post_db = ModelPost(
-            header=post.header, content=post.content, author_id=post.author_id
+            header=post.header, content=post.content, author_id=author_id
         )
         db.session.add(post_db)
         db.session.commit()
