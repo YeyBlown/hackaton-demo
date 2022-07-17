@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  games-server:
+    image: "demo-server"
+    container_name: "pollos-demo-server"
+    ports:
+      - "8000:8000"
+  postgresql:
+    image: "postgres"
+    container_name: "pollos-demo-postgresql"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=myusername
+      - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - /data\:/var/lib/postgresql/data
+  # TODO: move out env args
