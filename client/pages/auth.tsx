@@ -118,7 +118,7 @@ const Auth: NextPage = () => {
             </Head>
             <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
                 <div className="w-full p-6 m-auto bg-white border-t-4 border-purple-600 rounded-md shadow-md border-top lg:max-w-md">
-                    <h1 className="text-3xl font-semibold text-center text-purple-700">LOGO</h1>
+                    <h1 className="text-3xl font-semibold text-center text-purple-700">LOS POLLOS</h1>
                     <form className="mt-6">
                         <div>
                             <label htmlFor="email" className="block text-sm text-gray-800">Email</label>
@@ -141,11 +141,11 @@ const Auth: NextPage = () => {
                                             DELETE ME
                                         </button>
                                     </Link>
-                                    <Link href='/'>
+                                    {/* <Link href='/'>
                                         <button type="submit" onClick={handleSubmit} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
                                             CREATE USER
                                         </button>
-                                    </Link>
+                                    </Link> */}
                                 </div>
                             </div>
                         </div>
