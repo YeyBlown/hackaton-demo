@@ -7,13 +7,6 @@ const Header = () => {
   const [query, setQuery] = useState('')
   console.log(query)
 
-  //not working yet
-  // const Search = (data) => {
-  //   return data.filter(
-  //     (item) => item.username.toLowerCase().includes(query)
-  //   )
-  // }
-
   return (
     <div className="navbar bg-base-100 rounded-lg mb-3 bg-primary ">
       <div className="flex-1">

@@ -12,6 +12,27 @@ export default function App() {
             .catch((error) => console.log("Error ", error));
     }, []);
 
+
+    const handleDelete = () => {
+        fetch('http://localhost:8000/user/create', {
+            method: 'DELETE',   
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+
     return (
         <div className="wrapper">
             {data.map((user, index) => (
@@ -28,6 +49,7 @@ export default function App() {
                         <p>
                             Age: {user.age}
                         </p>
+                        
                     </div>
                 </div>
             ))}

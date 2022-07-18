@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from "next/router"
+import Link from 'next/link'
 // import isEmail from 'validator/lib/isEmail';
 
 
@@ -9,14 +10,103 @@ import { useRouter } from "next/router"
 const Auth: NextPage = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [token, setToken] = useState();
-
-    console.log(email)
-    console.log(password)
-
+    // const [token, setToken] = useState();
+    
     const router = useRouter()
 
+    function setToken(userToken) {
+        sessionStorage.setItem('token', JSON.stringify(userToken));
+    }
 
+    function getToken() {
+        const tokenString = sessionStorage.getItem('token');
+        const userToken = JSON.parse(tokenString);
+        return userToken
+    }
+
+    const handleLogin = () => {
+        fetch('http://localhost:8000/auth/token', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Basic ' + btoa('username:password'),
+                'Content-Type': 'application/x-www-form-urlencoded'
+                // 'Content-Type': 'application/json',
+            },
+            body:
+                `username=${email}&password=${password}`
+        })
+            .then(response => response.json())
+            .then(data => {
+                setToken(data.access_token)
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    
+    const handleMe = () => {
+        const token = getToken()
+        console.log(token)
+        fetch(`http://localhost:8000/auth/me`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    const handleDelete = () => {
+        const token = getToken()
+        console.log(token)
+        fetch(`http://localhost:8000/user/user`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+
+    const handleSubmit = () => {
+        fetch('http://localhost:8000/user/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "username": email,
+                "hashed_password": password,
+                "name": email,
+                "surname": "hui5",
+                "age": Math.floor(Math.random() * 100)
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
 
     return (
         <div>
@@ -40,9 +130,16 @@ const Auth: NextPage = () => {
                                 <a href="#" className="text-xs text-gray-600 hover:underline">Forget Password?</a>
                                 {/* Change the <a> tag to the link */}
                                 <div>
-                                    <button type="submit" className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
-                                        Log In
-                                    </button>
+                                    <Link href='/'>
+                                        <button type="submit" onClick={handleLogin} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
+                                            Log In
+                                        </button>
+                                    </Link>
+                                    <Link href='/'>
+                                        <button type="submit" onClick={handleMe} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
+                                            Handleme
+                                        </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
