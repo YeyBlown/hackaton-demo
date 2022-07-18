@@ -10,6 +10,11 @@ import Link from 'next/link'
 const Auth: NextPage = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [name, setName] = useState("")
+    const [surname, setSurname] = useState("")
+    const [age, setAge] = useState()
+    const [description, setDescription] = useState("")
+
     // const [token, setToken] = useState();
     console.log(email)
     console.log(password)
@@ -27,15 +32,21 @@ const Auth: NextPage = () => {
     }
 
     const handleLogin = () => {
-        fetch('http://0.0.0.0:8000/auth/token', {
+        fetch('http://0.0.0.0:8000/user/create', {
             method: 'POST',
             headers: {
-                'Authorization': 'Basic ' + btoa('username:password'),
                 'Content-Type': 'application/x-www-form-urlencoded'
                 // 'Content-Type': 'application/json',
             },
-            body:
-                `username=${email}&password=${password}`
+            body: JSON.stringify({
+                "username": `${setEmail}`,
+                "hashed_password": `${setPassword}`,
+                "name": `${setName}`,
+                "surname": `${setSurname}`,
+                "description": `${setDescription}`,
+                "age": `${setAge}`
+            })
+                
         })
             .then(response => response.json())
             .then(data => {
@@ -112,7 +123,7 @@ const Auth: NextPage = () => {
     return (
         <div>
             <Head>
-                <title>Auth page!</title>
+                <title>SignUp!</title>
                 <meta name="auth" content="initial-scale=1.0, width=device-width" />
                 <link rel="icon" href="/hackathon lohgo.png" />
             </Head>
@@ -124,6 +135,22 @@ const Auth: NextPage = () => {
                             <label htmlFor="email" className="block text-sm text-gray-800">Username</label>
                             <input type="text" placeholder="email" onChange={(e) => setEmail(e.target.value)} className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" />
                         </div>
+                        <div>
+                            <label htmlFor="name" className="block text-sm text-gray-800">Name</label>
+                            <input type="text" placeholder="name" onChange={(e) => setName(e.target.value)} className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        </div>
+                        <div>
+                            <label htmlFor="surname" className="block text-sm text-gray-800">Surname</label>
+                            <input type="text" placeholder="surname" onChange={(e) => setSurname(e.target.value)} className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        </div>
+                        <div>
+                            <label htmlFor="age" className="block text-sm text-gray-800">Age</label>
+                            <input type="int" placeholder="age" onChange={(e) => setAge(e.target.value)} className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        </div>
+                        <div>
+                            <label htmlFor="description" className="block text-sm text-gray-800">Description</label>
+                            <input type="text" placeholder="description" onChange={(e) => setDescription(e.target.value)} className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" />
+                        </div>
                         <div className='mt-4'>
                             <div>
                                 <label htmlFor="password" className="block text-sm text-gray-800">Password</label>
@@ -131,14 +158,9 @@ const Auth: NextPage = () => {
                                 <a href="#" className="text-xs text-gray-600 hover:underline">Forget Password?</a>
                                 {/* Change the <a> tag to the link */}
                                 <div>
-                                    <Link href='/'>
+                                    <Link href='/auth'>
                                         <button type="submit" onClick={handleLogin} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
-                                            Log In
-                                        </button>
-                                    </Link>
-                                    <Link href='/'>
-                                        <button type="submit" onClick={handleDelete} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
-                                            DELETE ME
+                                            Sign Up
                                         </button>
                                     </Link>
                                     {/* <Link href='/'>
@@ -150,13 +172,6 @@ const Auth: NextPage = () => {
                             </div>
                         </div>
                     </form>
-                    <p className="mt-8 text-xs font-light text-center text-gray-700"> Dont have an account?
-                        <Link href="/signUp">
-                            <a>
-                                <button className="font-medium text-purple-600 hover:underline"> Sign up</button>
-                            </a>
-                        </Link>
-                    </p>
                 </div>
             </div>
         </div>

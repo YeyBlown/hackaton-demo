@@ -8,6 +8,25 @@ const Header = () => {
   const [query, setQuery] = useState('')
   console.log(query)
 
+
+  // const Search = () => {
+  //   fetch(`http://0.0.0.0:8000/user/search`, {
+  //           method: 'GET',
+  //           headers: {
+  //               'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({query: query})
+  //       })
+  //           .then(response => response.json())
+  //           .then(data => {
+  //               console.log('Success:', data);
+  //           })
+  //           .catch((error) => {
+  //               console.error('Error:', error);
+  //           });
+  // }
+
+
   return (
     <div className="navbar bg-base-100 rounded-lg mb-3 bg-primary ">
       <div className="flex-1">
@@ -17,7 +36,16 @@ const Header = () => {
       </div>
       <div className="flex-none gap-2">
         <div className="form-control">
-          <input type="text" placeholder="Search by username" className="input input-bordered" onChange={(e) => setQuery(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Search..."
+            onChange={event => { this.setQuery({ query: event.target.value }) }}
+            onKeyPress={event => {
+              if (event.key === 'Enter') {
+                this.search()
+              }
+            }}
+          />
         </div>
         <Link href='/auth'>
           <a>
