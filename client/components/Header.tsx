@@ -10,7 +10,7 @@ const Header = () => {
 
 
   // const search = () => {
-  //   fetch(`http://0.0.0.0:8000/user/search`, {
+  //   fetch(`http://games-client:8000/user/search`, {
   //           method: 'GET',
   //           headers: {
   //               'Content-Type': 'application/json',

@@ -32,7 +32,7 @@ const Auth: NextPage = () => {
     }
 
     const handleLoginHuin = () => {
-        fetch('http://0.0.0.0:8000/user/create', {
+        fetch('http://games-client:8000/user/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -58,7 +58,7 @@ const Auth: NextPage = () => {
     const handleMe = () => {
         const token = getToken()
         console.log(token)
-        fetch(`http://0.0.0.0:8000/auth/me`, {
+        fetch(`http://games-client:8000/auth/me`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -77,7 +77,7 @@ const Auth: NextPage = () => {
     const handleDelete = () => {
         const token = getToken()
         console.log(token)
-        fetch(`http://0.0.0.0:8000/user/user`, {
+        fetch(`http://games-client:8000/user/user`, {
             method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -94,7 +94,7 @@ const Auth: NextPage = () => {
     }
 
     const handleSubmit = () => {
-        fetch('http://0.0.0.0:8000/user/create', {
+        fetch('http://games-client:8000/user/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
