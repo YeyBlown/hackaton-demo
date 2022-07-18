@@ -19,5 +19,14 @@ services:
     image: "demo-client"
     container_name: "pollos-demo-client"
     ports:
-      - "3000:3000"
+      - "3000:443"
   # TODO: move out env args
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ../nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - games-client
+    ports:
+      - "443:4000"
