@@ -9,8 +9,6 @@ from adapters.contract import PostgresEnv, AppEnv
 from controllers import auth, post, api, user
 
 
-load_dotenv("local.env")
-
 app = FastAPI()
 
 app.include_router(auth.router)

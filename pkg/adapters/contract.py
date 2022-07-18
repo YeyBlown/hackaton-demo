@@ -1,8 +1,10 @@
 """config logic here"""
 # pylint: disable=missing-function-docstring,missing-class-docstring
-
-
 import os
+from dotenv import load_dotenv
+
+
+load_dotenv("local.env")
 
 
 class PostgresEnv:

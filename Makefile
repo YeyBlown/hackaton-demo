@@ -17,15 +17,17 @@ lint:
 	pylint ./pkg --rcfile .pylintrc
 
 dockr:
-	#docker rm -f demo-server || true
+	docker rm -f demo-server || true
 	docker build . -f docker/.Dockerfile --tag demo-server
 	docker create --name demo-server demo-server
 
 run:
-	docker-compose -f docker/docker-compose.yml up
+	make -C docker/ run
 
 stop:
-	docker-compose down -f docker/docker-compose.yml
+	make -C docker/ stop
 
 db.upgrade:
+	# TODO: add script for db create
+	# TODO: add to server script
 	alembic upgrade head
