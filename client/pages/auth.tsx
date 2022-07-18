@@ -16,13 +16,13 @@ const Auth: NextPage = () => {
 
     const router = useRouter()
 
-    function setToken(userToken) {
+    function setToken(userToken: any) {
         sessionStorage.setItem('token', JSON.stringify(userToken));
     }
 
     function getToken() {
         const tokenString = sessionStorage.getItem('token');
-        const userToken = JSON.parse(tokenString);
+        const userToken = JSON.parse(tokenString || '');
         return userToken
     }
 
