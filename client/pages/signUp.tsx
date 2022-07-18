@@ -12,7 +12,7 @@ const Auth: NextPage = () => {
     const [password, setPassword] = useState("")
     const [name, setName] = useState("")
     const [surname, setSurname] = useState("")
-    const [age, setAge] = useState()
+    const [age, setAge] = useState("")
     const [description, setDescription] = useState("")
 
     // const [token, setToken] = useState();
@@ -31,28 +31,24 @@ const Auth: NextPage = () => {
         return userToken
     }
 
-    const handleLogin = () => {
+    const handleLoginHuin = () => {
         fetch('http://0.0.0.0:8000/user/create', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
                 // 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "username": `${setEmail}`,
-                "hashed_password": `${setPassword}`,
-                "name": `${setName}`,
-                "surname": `${setSurname}`,
-                "description": `${setDescription}`,
-                "age": `${setAge}`
+                "username": `${email}`,
+                "hashed_password": `${password}`,
+                "name": `${name}`,
+                "surname": `${surname}`,
+                "description": `${description}`,
+                "age": parseInt(age)
             })
                 
         })
             .then(response => response.json())
-            .then(data => {
-                setToken(data.access_token)
-                console.log('Success:', data);
-            })
             .catch((error) => {
                 console.error('Error:', error);
             });
@@ -125,7 +121,7 @@ const Auth: NextPage = () => {
             <Head>
                 <title>SignUp!</title>
                 <meta name="auth" content="initial-scale=1.0, width=device-width" />
-                <link rel="icon" href="/hackathon lohgo.png" />
+                <link rel="icon" href="/client/public/hackathon lohgo.png" />
             </Head>
             <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
                 <div className="w-full p-6 m-auto bg-white border-t-4 border-purple-600 rounded-md shadow-md border-top lg:max-w-md">
@@ -145,7 +141,7 @@ const Auth: NextPage = () => {
                         </div>
                         <div>
                             <label htmlFor="age" className="block text-sm text-gray-800">Age</label>
-                            <input type="int" placeholder="age" onChange={(e) => setAge(e.target.value)} className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" />
+                            <input type="text" placeholder="age" onChange={(e) => setAge(e.target.value)} className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" />
                         </div>
                         <div>
                             <label htmlFor="description" className="block text-sm text-gray-800">Description</label>
@@ -155,11 +151,10 @@ const Auth: NextPage = () => {
                             <div>
                                 <label htmlFor="password" className="block text-sm text-gray-800">Password</label>
                                 <input type="password" placeholder="password" onChange={e => setPassword(e.target.value)} className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40" />
-                                <a href="#" className="text-xs text-gray-600 hover:underline">Forget Password?</a>
                                 {/* Change the <a> tag to the link */}
                                 <div>
-                                    <Link href='/auth'>
-                                        <button type="submit" onClick={handleLogin} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
+                                    <Link href='auth'>
+                                        <button type="submit" onClick={handleLoginHuin} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
                                             Sign Up
                                         </button>
                                     </Link>

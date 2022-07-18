@@ -9,7 +9,7 @@ const Header = () => {
   console.log(query)
 
 
-  // const Search = () => {
+  // const search = () => {
   //   fetch(`http://0.0.0.0:8000/user/search`, {
   //           method: 'GET',
   //           headers: {
@@ -39,12 +39,13 @@ const Header = () => {
           <input
             type="text"
             placeholder="Search..."
-            onChange={event => { this.setQuery({ query: event.target.value }) }}
-            onKeyPress={event => {
-              if (event.key === 'Enter') {
-                this.search()
-              }
-            }}
+            // onChange={event => { this.setQuery({ query: event.target.value }) }}
+            // onKeyPress={event => {
+            //   if (event.key === 'Enter') {
+            //     this.search()
+            //   }
+            // }
+            // }
           />
         </div>
         <Link href='/auth'>
