@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from "next/router"
-import isEmail from 'validator/lib/isEmail';
+// import isEmail from 'validator/lib/isEmail';
 
 
 
@@ -47,7 +47,7 @@ const Auth: NextPage = () => {
                             </div>
                         </div>
                     </form>
-                    <p className="mt-8 text-xs font-light text-center text-gray-700"> Don't have an account?
+                    <p className="mt-8 text-xs font-light text-center text-gray-700"> Dont have an account?
                         <button className="font-medium text-purple-600 hover:underline"> Sign up</button>
                     </p>
                 </div>

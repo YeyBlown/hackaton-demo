@@ -8,11 +8,11 @@ const Header = () => {
   console.log(query)
 
   //not working yet
-  const Search = (data) => {
-    return data.filter(
-      (item) => item.username.toLowerCase().includes(query)
-    )
-  }
+  // const Search = (data) => {
+  //   return data.filter(
+  //     (item) => item.username.toLowerCase().includes(query)
+  //   )
+  // }
 
   return (
     <div className="navbar bg-base-100 rounded-lg mb-3 bg-primary ">
@@ -31,12 +31,12 @@ const Header = () => {
           </a>
         </Link>
         <div className="dropdown dropdown-end" >
-          <label tabIndex="0" className="btn btn-ghost btn-circle avatar">
+          <label  className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
               <img src="https://placeimg.com/80/80/people" />
             </div>
           </label>
-          <ul tabIndex="0" className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
+          <ul className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
             <li>
               <a className="justify-between">
                 Profile
