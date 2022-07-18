@@ -27,6 +27,13 @@ def view(page: int = 0, page_size: int = 10, sort_by: str = 'id', asc_order: boo
     return users
 
 
+@router.get("/search")
+def view(query: str, search_by: str = 'username', page: int = 0, page_size: int = 10, sort_by: str = 'id', asc_order: bool = True):
+    """returns paginated user models"""
+    users = DBFacade().search_users(query, search_by, page, page_size, sort_by, asc_order)
+    return users
+
+
 @router.get("/view_all")
 def view():
     """returns all user models"""

@@ -7,19 +7,11 @@ postgres.run:
 postgres.stop:
 	docker stop postgresql
 
-fmt:
-	black ./pkg --check
-
-fmt.fix:
-	black ./pkg
-
-lint:
-	pylint ./pkg --rcfile .pylintrc
-
 dockr:
-	docker rm -f demo-server || true
-	docker build . -f docker/.Dockerfile --tag demo-server
-	docker create --name demo-server demo-server
+	# backend
+	make -C server/ dockr
+	# frontend
+	make -C client/ dockr
 
 run:
 	make -C docker/ run

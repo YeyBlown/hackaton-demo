@@ -1,8 +1,9 @@
 """main and only application entrypoint"""
-from dotenv import load_dotenv
 import uvicorn
 from fastapi import FastAPI
 from fastapi_sqlalchemy import DBSessionMiddleware
+
+from fastapi.middleware.cors import CORSMiddleware #cors
 
 from adapters.contract import PostgresEnv, AppEnv
 
@@ -10,6 +11,15 @@ from controllers import auth, post, api, user
 
 
 app = FastAPI()
+
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth.router)
 app.include_router(post.router)
