@@ -11,7 +11,9 @@ const Auth: NextPage = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     // const [token, setToken] = useState();
-    
+    console.log(email)
+    console.log(password)
+
     const router = useRouter()
 
     function setToken(userToken) {
@@ -45,7 +47,7 @@ const Auth: NextPage = () => {
             });
     }
 
-    
+
     const handleMe = () => {
         const token = getToken()
         console.log(token)
@@ -83,7 +85,6 @@ const Auth: NextPage = () => {
                 console.error('Error:', error);
             });
     }
-
 
     const handleSubmit = () => {
         fetch('http://localhost:8000/user/create', {
@@ -136,8 +137,13 @@ const Auth: NextPage = () => {
                                         </button>
                                     </Link>
                                     <Link href='/'>
-                                        <button type="submit" onClick={handleMe} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
-                                            Handleme
+                                        <button type="submit" onClick={handleDelete} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
+                                            DELETE ME
+                                        </button>
+                                    </Link>
+                                    <Link href='/'>
+                                        <button type="submit" onClick={handleSubmit} className="block w-full px-4 py-2 mt-4 text-white bg-purple-600 border border-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-purple-300 focus:ring focus:ring-opacity-40">
+                                            CREATE USER
                                         </button>
                                     </Link>
                                 </div>

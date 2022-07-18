@@ -13,24 +13,24 @@ export default function App() {
     }, []);
 
 
-    const handleDelete = () => {
-        fetch('http://localhost:8000/user/create', {
-            method: 'DELETE',   
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+    // const handleDelete = () => {
+    //     fetch('http://localhost:8000/user/create', {
+    //         method: 'DELETE',   
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({
                 
-            }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
+    //         }),
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             console.log('Success:', data);
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error:', error);
+    //         });
+    // }
 
 
     return (
@@ -38,7 +38,6 @@ export default function App() {
             {data.map((user, index) => (
                 <div key={index} className="card">
                     {/* <img src={user.picture.large} alt="" /> */}
-                    <button type="submit" placeholder="delete" className="border rounded-md bg-primary cursor-pointer">Delete</button>
                     <div className="name">
                         <p>
                             Username: {user.name}
