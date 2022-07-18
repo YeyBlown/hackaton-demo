@@ -4,7 +4,7 @@ import threading
 from typing import Optional
 
 from fastapi_sqlalchemy import db
-from sqlalchemy import and_, func
+from sqlalchemy import and_, func, desc, asc
 
 from adapters.hash_utils import HashUtils
 from entities.exceptions import (
@@ -71,10 +71,22 @@ class DBFacade:
         return users
 
     @lock_decorator(_lock)
+    def get_paginated_users(self, page, page_size, sort_by, asc_order):
+        """returns all user models"""
+        users = _UserDBAdapter.query_paginated_users(page, page_size, sort_by, asc_order)
+        return users
+
+    @lock_decorator(_lock)
     def create_user(self, user: SchemaUser):
         """creates new user model by schema and stores it"""
         user_db = _UserDBAdapter.create_user(user)
         return user_db
+
+    @lock_decorator(_lock)
+    def delete_user(self, user: ModelUser):
+        """deletes given user"""
+        db.session.delete(user)
+        db.session.commit()
 
     @staticmethod
     def update_last_login(user: ModelUser):
@@ -163,6 +175,10 @@ class _UserDBAdapter:
         user_db = ModelUser(
             username=user.username,
             hashed_password=hashed_password,
+            name=user.name,
+            surname=user.surname,
+            description=user.description,
+            age=user.age,
             posts_created=[],
             likes=[],
         )
@@ -199,6 +215,11 @@ class _UserDBAdapter:
         user.likes.remove(like)
         db.session.add(user)
         db.session.commit()
+
+    @staticmethod
+    def query_paginated_users(page, page_size, sort_by, asc_order):
+        users = db.session.query(ModelUser).order_by(asc(sort_by) if asc_order else desc(sort_by)).limit(page_size).offset(page * page_size).all()
+        return users
 
 
 class _PostDBAdapter:

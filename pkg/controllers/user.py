@@ -21,6 +21,13 @@ def create(user: SchemaUser):
 
 
 @router.get("/view")
+def view(page: int = 0, page_size: int = 10, sort_by: str = 'id', asc_order: bool = True):
+    """returns paginated user models"""
+    users = DBFacade().get_paginated_users(page, page_size, sort_by, asc_order)
+    return users
+
+
+@router.get("/view_all")
 def view():
     """returns all user models"""
     users = DBFacade().get_all_users()
@@ -45,4 +52,16 @@ def user_activity(username: str):
     return {
         "last_login": user.time_last_login,
         "last_activity": user.time_last_activity,
+    }
+
+
+@router.delete("/user")
+def delete_user(
+    current_user: ModelUser = Depends(TokenService.get_current_user),
+):
+    """deletes current user"""
+    # TODO: delete all activity associated with the user
+    DBFacade().delete_user(current_user)
+    return {
+        "status": "success"
     }

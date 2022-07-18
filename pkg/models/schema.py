@@ -15,6 +15,10 @@ class Post(BaseModel):
 class User(BaseModel):
     username: str
     hashed_password: str
+    name: str
+    surname: str
+    description: str = None
+    age: int
 
     class Config:
         orm_mode = True

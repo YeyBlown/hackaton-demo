@@ -1,4 +1,6 @@
 import json
+import pprint
+
 import requests
 
 from services.config import AppEnv
@@ -14,11 +16,11 @@ class RequestService:
         self.create_like_url = self.app_url + '/post/like'
 
     def register_user(self, user):
-        response = requests.post(self.register_url, json={"username": user.get_username(), "hashed_password": user.get_password()})
+        response = requests.post(self.register_url, json=user.get_create_request())
         return response
 
     def get_token(self, user):
-        response = requests.post(self.token_url, data={"client_secret":"lol", "username": user.get_username(), "password": user.get_password()})
+        response = requests.post(self.token_url, data=user.get_login_request())
         token = json.loads(response.content)["access_token"]
         return token
 

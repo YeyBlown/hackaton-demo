@@ -29,7 +29,7 @@ config.set_main_option("sqlalchemy.url", PostgresEnv.get_url())
 fileConfig(config.config_file_name)
 
 
-from pkg.models.models import Base
+from pkg.models.models import *
 
 # add your model's MetaData object here
 # for 'autogenerate' support

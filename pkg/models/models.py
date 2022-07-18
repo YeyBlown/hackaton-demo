@@ -25,8 +25,15 @@ class Post(Base):
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True)
-    username = Column(String)
-    hashed_password = Column(String)
+
+    username = Column(String, unique=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+
+    name = Column(String, nullable=False)
+    surname = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    age = Column(Integer, nullable=False)
+
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_last_activity = Column(DateTime(timezone=True), onupdate=func.now())
     time_last_login = Column(DateTime(timezone=True), onupdate=func.now())
