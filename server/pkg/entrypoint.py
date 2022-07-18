@@ -1,5 +1,4 @@
 """main and only application entrypoint"""
-from dotenv import load_dotenv
 import uvicorn
 from fastapi import FastAPI
 from fastapi_sqlalchemy import DBSessionMiddleware

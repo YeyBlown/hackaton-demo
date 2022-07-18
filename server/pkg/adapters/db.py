@@ -77,6 +77,12 @@ class DBFacade:
         return users
 
     @lock_decorator(_lock)
+    def search_users(self, query, search_by, page, page_size, sort_by, asc_order):
+        """returns all user models"""
+        users = _UserDBAdapter.search_paginated_users(query, search_by, page, page_size, sort_by, asc_order)
+        return users
+
+    @lock_decorator(_lock)
     def create_user(self, user: SchemaUser):
         """creates new user model by schema and stores it"""
         user_db = _UserDBAdapter.create_user(user)
@@ -218,7 +224,15 @@ class _UserDBAdapter:
 
     @staticmethod
     def query_paginated_users(page, page_size, sort_by, asc_order):
-        users = db.session.query(ModelUser).order_by(asc(sort_by) if asc_order else desc(sort_by)).limit(page_size).offset(page * page_size).all()
+        users = db.session.query(ModelUser).order_by(asc(sort_by) if asc_order else desc(sort_by)).\
+            limit(page_size).offset(page * page_size).all()
+        return users
+
+    @staticmethod
+    def search_paginated_users(query, search_by, page, page_size, sort_by, asc_order):
+        users = db.session.query(ModelUser).filter(ModelUser.username.regexp_match(query)).\
+            order_by(asc(sort_by) if asc_order else desc(sort_by)).\
+            limit(page_size).offset(page * page_size).all()
         return users
 
 

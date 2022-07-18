@@ -1,6 +1,6 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, create_engine
 from sqlalchemy import pool
 
 from alembic import context
@@ -15,6 +15,7 @@ load_dotenv(os.path.join(BASE_DIR, "pkg/local.env"))
 sys.path.append(BASE_DIR)
 
 from pkg.adapters.contract import PostgresEnv
+from pkg.models.models import Base
 
 
 # This is the Alembic Config object, which provides
@@ -28,14 +29,23 @@ config.set_main_option("sqlalchemy.url", PostgresEnv.get_url())
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-
-from pkg.models.models import *
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
+
+postgres_uri = PostgresEnv.get_url()
+postgres_uri = '/'.join(postgres_uri.split('/')[:-1])
+print(f'clean_uri: {postgres_uri}')
+engine = create_engine(postgres_uri)
+conn = engine.connect()
+try:
+    conn.execute(f"CREATE DATABASE IF NOT EXISTS {PostgresEnv.get_database()}")
+except:
+    pass
+conn.close()
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

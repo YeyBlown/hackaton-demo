@@ -1,9 +1,8 @@
 import json
-import pprint
 
 import requests
 
-from services.config import AppEnv
+from services import AppEnv
 
 
 class RequestService:
