@@ -15,4 +15,9 @@ services:
       - POSTGRES_PASSWORD=mypassword
     volumes:
       - /data\:/var/lib/postgresql/data
+  games-client:
+    image: "demo-client"
+    container_name: "pollos-demo-client"
+    ports:
+      - "3000:3000"
   # TODO: move out env args
