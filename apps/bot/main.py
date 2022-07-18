@@ -1,6 +1,6 @@
 import dotenv
 
-from services.simulator import Simulator
+from services import Simulator
 
 
 dotenv.load_dotenv('bot.env')

@@ -29,4 +29,4 @@ services:
     depends_on:
       - games-client
     ports:
-      - "443:4000"
+      - "80:4000"

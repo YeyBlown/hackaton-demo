@@ -1,8 +1,8 @@
 import random
 
-from services.config import UsersEnv
-from services.request import RequestService
-from services.user_simulator import UserSimulator
+from services import UsersEnv
+from services import RequestService
+from services import UserSimulator
 
 
 class Simulator:

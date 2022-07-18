@@ -5,7 +5,6 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-WORKDIR /pkg
-# TODO: alembic
+#WORKDIR /pkg
 
-CMD ["python3", "entrypoint.py"]
+CMD ["sh", "-c", "alembic upgrade head ; python3 pkg/entrypoint.py"]

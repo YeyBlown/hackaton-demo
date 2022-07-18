@@ -27,6 +27,10 @@ class PostgresEnv:
     def get_url():
         return PostgresEnv.url
 
+    @staticmethod
+    def get_database():
+        return PostgresEnv.database
+
 
 class EncryptionEnv:
     hash_encryption_schema = os.getenv("HASH_ENCRYPTION_SCHEMA")
