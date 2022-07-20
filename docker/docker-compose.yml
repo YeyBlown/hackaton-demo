@@ -1,10 +1,7 @@
 version: "3.9"
+
+# TODO: move out env args
 services:
-  games-server:
-    image: "demo-server"
-    container_name: "pollos-demo-server"
-    ports:
-      - "8000:8000"
   postgresql:
     image: "postgres"
     container_name: "pollos-demo-postgresql"
@@ -15,12 +12,22 @@ services:
       - POSTGRES_PASSWORD=mypassword
     volumes:
       - /data\:/var/lib/postgresql/data
+    networks:
+      - backend
+  games-server:
+    image: "demo-server"
+    container_name: "pollos-demo-server"
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
   games-client:
     image: "demo-client"
     container_name: "pollos-demo-client"
     ports:
       - "3000:443"
-  # TODO: move out env args
+    networks:
+      - frontend
 
   nginx:
     image: nginx:latest
@@ -30,3 +37,13 @@ services:
       - games-client
     ports:
       - "80:4000"
+      - "443:4001"
+    networks:
+      - backend
+      - frontend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

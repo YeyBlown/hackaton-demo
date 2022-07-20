@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import base_url from '../base_url.js';
 
 
 export default function App() {
@@ -6,7 +7,7 @@ export default function App() {
     const [data, setData] = useState<any[]>([]);
     //Fetches data on a load
     useEffect(() => {
-        fetch("http://games-server:8000/user/view_all")
+        fetch(base_url + "/user/view_all")
             .then((response) => response.json())
             .then((data) => setData(data))
             .catch((error) => console.log("Error ", error));

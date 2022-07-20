@@ -3,6 +3,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from "next/router"
 import Link from 'next/link'
+import base_url from "../base_url";
 // import isEmail from 'validator/lib/isEmail';
 
 
@@ -36,7 +37,7 @@ const Auth: NextPage = () => {
     }
 
     const handleLoginHuin = () => {
-        fetch('http://games-server:8000/user/create', {
+        fetch(base_url + '/user/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -62,7 +63,7 @@ const Auth: NextPage = () => {
     const handleMe = () => {
         const token = getToken()
         console.log(token)
-        fetch(`http://games-server:8000/auth/me`, {
+        fetch(base_url + `/auth/me`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -81,7 +82,7 @@ const Auth: NextPage = () => {
     const handleDelete = () => {
         const token = getToken()
         console.log(token)
-        fetch(`http://games-server:8000/user/user`, {
+        fetch(base_url + `/user/user`, {
             method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -98,7 +99,7 @@ const Auth: NextPage = () => {
     }
 
     const handleSubmit = () => {
-        fetch('http://games-server:8000/user/create', {
+        fetch(base_url + '/user/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
