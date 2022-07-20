@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import React from 'react'
 
@@ -8,7 +8,15 @@ const Header = () => {
   const [query, setQuery] = useState('')
   console.log(query)
 
+  useEffect(() => {
+    // Perform localStorage action
+    const item = localStorage.getItem('token')
+  }, [])
+  // const token = sessionStorage.getItem('token')
 
+  const handleLogout = () => {
+    return sessionStorage.removeItem('token')
+  }
   // const search = () => {
   //   fetch(`http://games-server:8000/user/search`, {
   //           method: 'GET',
@@ -39,18 +47,23 @@ const Header = () => {
           <input
             type="text"
             placeholder="Search..."
-            // onChange={event => { this.setQuery({ query: event.target.value }) }}
-            // onKeyPress={event => {
-            //   if (event.key === 'Enter') {
-            //     this.search()
-            //   }
-            // }
-            // }
+          // onChange={event => { this.setQuery({ query: event.target.value }) }}
+          // onKeyPress={event => {
+          //   if (event.key === 'Enter') {
+          //     this.search()
+          //   }
+          // }
+          // }
           />
         </div>
         <Link href='/auth'>
           <a>
             <button className="btn btn-ghost"> Authorize </button>
+          </a>
+        </Link>
+        <Link href='/'>
+          <a>
+            <button className="btn btn-ghost" onClick={handleLogout}> Logout</button>
           </a>
         </Link>
         <div className="dropdown dropdown-end" >
