@@ -17,6 +17,10 @@ const Auth: NextPage = () => {
 
     // const [token, setToken] = useState();
     console.log(email)
+    console.log(name)
+    console.log(age)
+    console.log(description)
+    console.log(surname)
     console.log(password)
 
     const router = useRouter()
